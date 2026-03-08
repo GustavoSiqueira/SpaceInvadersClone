@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://lien001"]
+
+[ext_resource type="Script" path="res://scripts/alien.gd" id="1_alien"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_alien"]
+size = Vector2(28, 20)
+
+[node name="Alien" type="Area2D"]
+collision_layer = 2
+collision_mask = 0
+monitorable = true
+monitoring = false
+script = ExtResource("1_alien")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_alien")
+
+[node name="Frame0" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-14, -10, 14, -10, 14, 10, -14, 10)
+color = Color(1, 1, 1, 1)
+
+[node name="Frame1" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-14, -10, 14, -10, 8, 4, 4, 10, -4, 10, -8, 4)
+color = Color(1, 1, 1, 1)
+visible = false

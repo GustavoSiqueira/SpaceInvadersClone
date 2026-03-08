@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://ufo001"]
+
+[ext_resource type="Script" path="res://scripts/ufo.gd" id="1_ufo"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ufo"]
+size = Vector2(40, 16)
+
+[node name="UFO" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+monitorable = true
+monitoring = false
+script = ExtResource("1_ufo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ufo")
+
+[node name="Sprite" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-20, 0, -10, -8, 10, -8, 20, 0, 10, 8, -10, 8)
+color = Color(1, 0, 0, 1)

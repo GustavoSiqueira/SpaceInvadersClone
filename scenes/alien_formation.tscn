@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://formation001"]
+
+[ext_resource type="Script" uid="uid://b02bpwls7qpgd" path="res://scripts/alien_formation.gd" id="1_af"]
+
+[node name="AlienFormation" type="Node2D" unique_id=1784486118]
+script = ExtResource("1_af")

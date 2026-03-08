@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://main001"]
+
+[ext_resource type="Script" uid="uid://du7ijnu64vg8m" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://hud001" path="res://scenes/hud.tscn" id="3_hud"]
+
+[node name="Main" type="Node2D" unique_id=1504647185]
+script = ExtResource("1_main")
+
+[node name="Player" parent="." unique_id=1560288256 instance=ExtResource("2_player")]
+position = Vector2(400, 540)
+
+[node name="Shields" type="Node2D" parent="." unique_id=451830517]
+
+[node name="PlayerBullets" type="Node2D" parent="." unique_id=1456492463]
+
+[node name="EnemyBullets" type="Node2D" parent="." unique_id=1128621549]
+
+[node name="UFOTimer" type="Timer" parent="." unique_id=1806809127]
+wait_time = 20.0
+one_shot = true
+
+[node name="HUD" parent="." unique_id=1191165711 instance=ExtResource("3_hud")]
