@@ -22,6 +22,7 @@ var wave: int = 1
 var formation: Node2D = null
 var ufo: Area2D = null
 var game_active: bool = true
+var is_paused: bool = false
 
 
 func _load_hi_score() -> void:
@@ -41,6 +42,7 @@ func _setup_input_actions() -> void:
 	_map_key_action(&"move_right", KEY_RIGHT)
 	_map_key_action(&"shoot", KEY_SPACE)
 	_map_key_action(&"restart", KEY_F5)
+	_map_key_action(&"pause", KEY_ESCAPE)
 
 
 func _map_key_action(action: StringName, keycode: Key) -> void:
@@ -58,6 +60,7 @@ func _ready() -> void:
 	player.bullets_container = player_bullets
 	player.player_hit.connect(_on_player_hit)
 	ufo_timer.timeout.connect(_on_ufo_timer_timeout)
+	hud.pause_toggled.connect(_toggle_pause)
 	_create_boundaries()
 	_spawn_shields()
 	_spawn_formation()
@@ -184,13 +187,25 @@ func _game_over() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if game_active:
-		return
-	if event.is_action_pressed("restart"):
+	if not game_active and event.is_action_pressed("restart"):
 		_restart_game()
 
 
+func _toggle_pause() -> void:
+	if not game_active:
+		return
+	is_paused = not is_paused
+	get_tree().paused = is_paused
+	if is_paused:
+		hud.show_pause()
+	else:
+		hud.hide_pause()
+
+
 func _restart_game() -> void:
+	if is_paused:
+		is_paused = false
+		get_tree().paused = false
 	# Reset state
 	score = 0
 	lives = 3
@@ -225,3 +240,4 @@ func _restart_game() -> void:
 	hud.update_score(score, hi_score)
 	hud.update_lives(lives)
 	hud.hide_game_over()
+	hud.hide_pause()

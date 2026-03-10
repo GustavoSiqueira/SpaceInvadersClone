@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud"]
 
 [node name="HUD" type="CanvasLayer"]
+process_mode = 3
 script = ExtResource("1_hud")
 
 [node name="ScoreLabel" type="Label" parent="."]
@@ -50,5 +51,30 @@ offset_top = 60.0
 offset_right = 400.0
 offset_bottom = 110.0
 text = "Press F5 to restart"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PausePanel" type="Control" parent="."]
+visible = false
+offset_left = 200.0
+offset_top = 250.0
+offset_right = 600.0
+offset_bottom = 360.0
+
+[node name="PausedLabel" type="Label" parent="PausePanel"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 400.0
+offset_bottom = 60.0
+text = "PAUSED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResumeLabel" type="Label" parent="PausePanel"]
+offset_left = 0.0
+offset_top = 60.0
+offset_right = 400.0
+offset_bottom = 110.0
+text = "Press Escape to resume"
 horizontal_alignment = 1
 vertical_alignment = 1

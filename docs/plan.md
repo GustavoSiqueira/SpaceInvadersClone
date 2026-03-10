@@ -108,5 +108,5 @@
 - [X] Player bullet destroys alien + shield segment on contact
 - [X] UFO appears periodically, score added on kill
 - [X] Player flashes red on hit, respawns after delay
-- [ ] Game Over shown at 0 lives
+- [X] Game Over shown at 0 lives
 - [X] New wave spawns after all aliens killed

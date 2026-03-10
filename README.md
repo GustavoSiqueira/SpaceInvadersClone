@@ -38,6 +38,8 @@ godot --headless --path /home/gustavo/src/space-invaders
 | Move left | Left Arrow |
 | Move right | Right Arrow |
 | Fire | Space or Enter |
+| Pause / Resume | Escape |
+| Restart (game over) | F5 |
 
 ---
 
@@ -97,11 +99,12 @@ Main (Node2D)                    ← main.gd
 │   └── Alien × 55 (Area2D)     ← alien.gd
 ├── UFO (Area2D)?                ← ufo.gd            [spawned on timer]
 ├── Boundary × 2 (Area2D)       ← built by main.gd   [top + bottom edges]
-└── HUD (CanvasLayer)            ← hud.gd
+└── HUD (CanvasLayer)            ← hud.gd  [PROCESS_MODE_ALWAYS]
 	├── ScoreLabel
 	├── HiScoreLabel
 	├── LivesLabel
-	└── GameOverPanel
+	├── GameOverPanel
+	└── PausePanel
 ```
 
 ### Design Patterns
@@ -269,26 +272,6 @@ To apply the font project-wide, create a `Theme` resource (`Project → Project 
 2. Add layer 128 to `PlayerBullet.collision_mask` in `player_bullet.tscn`.
 3. Handle the new `area_entered` case in `player_bullet.gd`.
 
-### Persistent Hi-Score
-
-Use Godot's `ConfigFile` in `main.gd`:
-
-```gdscript
-const SAVE_PATH = "user://save.cfg"
-
-func _load_hi_score() -> void:
-    var cfg := ConfigFile.new()
-    if cfg.load(SAVE_PATH) == OK:
-        hi_score = cfg.get_value("game", "hi_score", 0)
-
-func _save_hi_score() -> void:
-    var cfg := ConfigFile.new()
-    cfg.set_value("game", "hi_score", hi_score)
-    cfg.save(SAVE_PATH)
-```
-
-Call `_load_hi_score()` in `_ready()` and `_save_hi_score()` in `_game_over()`.
-
 ### Start Screen / Scene Transitions
 
 Create `scenes/title.tscn` with a "Press Start" label. On input, call:
@@ -308,6 +291,4 @@ See `docs/plan.md` for the full tracked checklist. High-level items still open:
 - Sprite art (all visuals are `Polygon2D` placeholder shapes)
 - Sound effects and music
 - Explosion animations
-- Persistent hi-score (`ConfigFile`)
 - Title/start screen
-- Pause menu
