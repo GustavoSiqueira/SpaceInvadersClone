@@ -94,6 +94,11 @@
 - [X] Persistent hi-score via ConfigFile
 - [ ] Start/title screen
 - [X] Pause menu
+- [ ] Translations
+- [ ] Joystick support
+- [ ] Custom key mappings
+- [ ] CRT effect
+- [ ] Adjust aspect ratio and handle different resolutions or screen resizes
 
 ---
 
