@@ -25,10 +25,10 @@ Open the project folder in the Godot editor and press **F5**, or from a terminal
 
 ```bash
 # Normal run
-godot --path /home/gustavo/src/space-invaders
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64 --path /home/gustavo/src/space-invaders
 
 # Headless (no window, useful for CI or scripted tests)
-godot --headless --path /home/gustavo/src/space-invaders
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64 --headless --path /home/gustavo/src/space-invaders
 ```
 
 **Controls**
@@ -40,6 +40,34 @@ godot --headless --path /home/gustavo/src/space-invaders
 | Fire | Space or Enter |
 | Pause / Resume | Escape |
 | Restart (game over) | F5 |
+
+---
+
+## Running Tests
+
+Tests use **GUT 9.6.0** (already installed in `addons/gut/`).
+
+```bash
+# Run all tests headless
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64 --headless \
+  -s addons/gut/gut_cmdln.gd \
+  -gdir=res://tests \
+  -ginclude_subdirs \
+  -gjunit_xml_file=res://test_results.xml \
+  -gexit
+
+# Run a single test script
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64 --headless \
+  -s addons/gut/gut_cmdln.gd \
+  -gtest=res://tests/unit/test_alien.gd \
+  -gexit
+```
+
+| Suite | Scripts | Tests |
+|---|---|---|
+| `tests/unit/` | 5 | 59 |
+| `tests/integration/` | 1 | 7 |
+| **Total** | **6** | **66** |
 
 ---
 
@@ -67,12 +95,17 @@ space-invaders/
 │   ├── shield.gd
 │   ├── ufo.gd
 │   └── hud.gd
+├── tests/
+│   ├── unit/            # GUT unit tests (one file per script under test)
+│   └── integration/     # GUT integration tests (bullet collision scenarios)
+├── addons/gut/          # GUT 9.6.0 test framework
 ├── assets/
 │   ├── sprites/         # PNG sprite sheets (not yet created — see below)
 │   ├── audio/           # WAV/OGG sound effects and music
 │   └── fonts/           # TTF arcade font for HUD
 ├── docs/
 │   └── plan.md          # Implementation checklist
+├── .gutconfig.json      # GUT CLI configuration
 ├── project.godot        # Godot project configuration
 └── README.md
 ```
@@ -90,7 +123,7 @@ Main (Node2D)                    ← main.gd
 ├── Player (CharacterBody2D)     ← player.gd
 ├── Shields (Node2D)
 │   └── Shield × 4 (Node2D)     ← shield.gd  [spawned at _ready]
-│       └── Segment × ~26 (Area2D)            [built by shield.gd]
+│       └── Segment × 28 (Area2D)             [built by shield.gd]
 ├── PlayerBullets (Node2D)       ← bullet container (max 1 child)
 │   └── PlayerBullet (Area2D)?  ← player_bullet.gd
 ├── EnemyBullets (Node2D)        ← bullet container (unlimited)

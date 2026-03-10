@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="GutTests" failures="0" tests="66" >
+  <testsuite name="tests/integration/test_bullet_collisions.gd" tests="7" failures="0" skipped="0" time="0.645426" >
+      <testcase name="test_player_bullet_kills_alien_on_area_entered" assertions="2" status="pass" classname="tests/integration/test_bullet_collisions.gd" time="0.023775" >
+      </testcase>
+      <testcase name="test_player_bullet_frees_itself_after_hitting_alien" assertions="1" status="pass" classname="tests/integration/test_bullet_collisions.gd" time="0.110421" >
+      </testcase>
+      <testcase name="test_player_bullet_frees_on_boundary" assertions="1" status="pass" classname="tests/integration/test_bullet_collisions.gd" time="0.103676" >
+      </testcase>
+      <testcase name="test_player_bullet_frees_on_ufo_hit" assertions="1" status="pass" classname="tests/integration/test_bullet_collisions.gd" time="0.103759" >
+      </testcase>
+      <testcase name="test_enemy_bullet_calls_hit_on_player" assertions="1" status="pass" classname="tests/integration/test_bullet_collisions.gd" time="0.096628" >
+      </testcase>
+      <testcase name="test_enemy_bullet_removes_shield_segment" assertions="1" status="pass" classname="tests/integration/test_bullet_collisions.gd" time="0.103525" >
+      </testcase>
+      <testcase name="test_enemy_bullet_frees_itself_on_boundary" assertions="1" status="pass" classname="tests/integration/test_bullet_collisions.gd" time="0.103642" >
+      </testcase>
+  </testsuite>
+  <testsuite name="tests/unit/test_alien.gd" tests="11" failures="0" skipped="0" time="1.063626" >
+      <testcase name="test_set_type_0_sets_alien_type_and_points" assertions="2" status="pass" classname="tests/unit/test_alien.gd" time="0.096173" >
+      </testcase>
+      <testcase name="test_set_type_1_sets_alien_type_and_points" assertions="2" status="pass" classname="tests/unit/test_alien.gd" time="0.096699" >
+      </testcase>
+      <testcase name="test_set_type_2_sets_alien_type_and_points" assertions="2" status="pass" classname="tests/unit/test_alien.gd" time="0.09672" >
+      </testcase>
+      <testcase name="test_set_type_clamps_negative_to_0" assertions="2" status="pass" classname="tests/unit/test_alien.gd" time="0.096821" >
+      </testcase>
+      <testcase name="test_set_type_clamps_high_to_2" assertions="2" status="pass" classname="tests/unit/test_alien.gd" time="0.096613" >
+      </testcase>
+      <testcase name="test_kill_sets_is_dead" assertions="1" status="pass" classname="tests/unit/test_alien.gd" time="0.096694" >
+      </testcase>
+      <testcase name="test_kill_emits_killed_signal" assertions="1" status="pass" classname="tests/unit/test_alien.gd" time="0.096724" >
+      </testcase>
+      <testcase name="test_kill_emits_killed_with_correct_points" assertions="1" status="pass" classname="tests/unit/test_alien.gd" time="0.097173" >
+      </testcase>
+      <testcase name="test_kill_is_idempotent" assertions="1" status="pass" classname="tests/unit/test_alien.gd" time="0.096655" >
+      </testcase>
+      <testcase name="test_toggle_frame_swaps_anim_frame_0_to_1" assertions="2" status="pass" classname="tests/unit/test_alien.gd" time="0.096685" >
+      </testcase>
+      <testcase name="test_toggle_frame_swaps_anim_frame_back_to_0" assertions="1" status="pass" classname="tests/unit/test_alien.gd" time="0.096669" >
+      </testcase>
+  </testsuite>
+  <testsuite name="tests/unit/test_alien_formation.gd" tests="14" failures="0" skipped="0" time="1.353803" >
+      <testcase name="test_spawn_grid_creates_55_aliens" assertions="2" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096187" >
+      </testcase>
+      <testcase name="test_row0_aliens_are_type_0" assertions="11" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096694" >
+      </testcase>
+      <testcase name="test_row1_aliens_are_type_0" assertions="11" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.097054" >
+      </testcase>
+      <testcase name="test_row2_aliens_are_type_1" assertions="11" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096385" >
+      </testcase>
+      <testcase name="test_row3_aliens_are_type_1" assertions="11" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096666" >
+      </testcase>
+      <testcase name="test_row4_aliens_are_type_2" assertions="11" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096683" >
+      </testcase>
+      <testcase name="test_recalc_speed_full_wave1_step_interval_is_max" assertions="1" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096983" >
+      </testcase>
+      <testcase name="test_recalc_speed_one_alien_wave1_step_interval_is_near_min" assertions="2" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096378" >
+      </testcase>
+      <testcase name="test_recalc_speed_higher_wave_is_faster" assertions="1" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096651" >
+      </testcase>
+      <testcase name="test_on_alien_killed_decrements_alive_count" assertions="1" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.097177" >
+      </testcase>
+      <testcase name="test_on_alien_killed_emits_alien_killed_with_pts" assertions="1" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.097073" >
+      </testcase>
+      <testcase name="test_on_alien_killed_emits_formation_cleared_when_last" assertions="1" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096558" >
+      </testcase>
+      <testcase name="test_on_alien_killed_does_not_emit_cleared_when_not_last" assertions="1" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.096664" >
+      </testcase>
+      <testcase name="test_stop_sets_is_stopped" assertions="2" status="pass" classname="tests/unit/test_alien_formation.gd" time="0.09665" >
+      </testcase>
+  </testsuite>
+  <testsuite name="tests/unit/test_main_scoring.gd" tests="11" failures="0" skipped="0" time="1.061087" >
+      <testcase name="test_add_score_increases_score" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.095922" >
+      </testcase>
+      <testcase name="test_add_score_accumulates" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.096702" >
+      </testcase>
+      <testcase name="test_add_score_updates_hi_score_when_exceeded" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.096693" >
+      </testcase>
+      <testcase name="test_add_score_does_not_decrease_hi_score" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.095125" >
+      </testcase>
+      <testcase name="test_kill_player_decrements_lives" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.096899" >
+      </testcase>
+      <testcase name="test_kill_player_triggers_game_over_at_zero_lives" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.09631" >
+      </testcase>
+      <testcase name="test_kill_player_no_game_over_when_lives_remain" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.096622" >
+      </testcase>
+      <testcase name="test_restart_game_resets_score" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.096679" >
+      </testcase>
+      <testcase name="test_restart_game_resets_lives" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.096692" >
+      </testcase>
+      <testcase name="test_restart_game_resets_wave" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.096715" >
+      </testcase>
+      <testcase name="test_restart_game_sets_game_active" assertions="1" status="pass" classname="tests/unit/test_main_scoring.gd" time="0.096728" >
+      </testcase>
+  </testsuite>
+  <testsuite name="tests/unit/test_player.gd" tests="7" failures="0" skipped="0" time="0.676254" >
+      <testcase name="test_hit_sets_is_alive_false" assertions="1" status="pass" classname="tests/unit/test_player.gd" time="0.095792" >
+      </testcase>
+      <testcase name="test_hit_emits_player_hit_signal" assertions="1" status="pass" classname="tests/unit/test_player.gd" time="0.096693" >
+      </testcase>
+      <testcase name="test_hit_is_idempotent" assertions="1" status="pass" classname="tests/unit/test_player.gd" time="0.096814" >
+      </testcase>
+      <testcase name="test_respawn_sets_is_alive_true" assertions="1" status="pass" classname="tests/unit/test_player.gd" time="0.096598" >
+      </testcase>
+      <testcase name="test_respawn_resets_position_x" assertions="1" status="pass" classname="tests/unit/test_player.gd" time="0.096851" >
+      </testcase>
+      <testcase name="test_shoot_with_empty_container_spawns_bullet" assertions="1" status="pass" classname="tests/unit/test_player.gd" time="0.096769" >
+      </testcase>
+      <testcase name="test_shoot_with_existing_bullet_does_not_spawn_another" assertions="1" status="pass" classname="tests/unit/test_player.gd" time="0.096737" >
+      </testcase>
+  </testsuite>
+  <testsuite name="tests/unit/test_shield.gd" tests="10" failures="0" skipped="0" time="0.966967" >
+      <testcase name="test_shield_builds_correct_segment_count" assertions="1" status="pass" classname="tests/unit/test_shield.gd" time="0.096133" >
+      </testcase>
+      <testcase name="test_is_notch_true_for_row2_col3" assertions="1" status="pass" classname="tests/unit/test_shield.gd" time="0.096705" >
+      </testcase>
+      <testcase name="test_is_notch_true_for_row2_col4" assertions="1" status="pass" classname="tests/unit/test_shield.gd" time="0.096838" >
+      </testcase>
+      <testcase name="test_is_notch_true_for_row3_col3" assertions="1" status="pass" classname="tests/unit/test_shield.gd" time="0.096656" >
+      </testcase>
+      <testcase name="test_is_notch_true_for_row3_col4" assertions="1" status="pass" classname="tests/unit/test_shield.gd" time="0.096747" >
+      </testcase>
+      <testcase name="test_is_notch_false_for_row0_col0" assertions="1" status="pass" classname="tests/unit/test_shield.gd" time="0.096879" >
+      </testcase>
+      <testcase name="test_is_notch_false_for_row1_col4" assertions="1" status="pass" classname="tests/unit/test_shield.gd" time="0.09683" >
+      </testcase>
+      <testcase name="test_is_notch_false_for_row2_col2" assertions="1" status="pass" classname="tests/unit/test_shield.gd" time="0.096794" >
+      </testcase>
+      <testcase name="test_all_segments_in_shield_segment_group" assertions="28" status="pass" classname="tests/unit/test_shield.gd" time="0.096699" >
+      </testcase>
+      <testcase name="test_all_segments_on_collision_layer_16" assertions="28" status="pass" classname="tests/unit/test_shield.gd" time="0.096686" >
+      </testcase>
+  </testsuite>
+  <testsuite name="tests/unit/test_ufo.gd" tests="6" failures="0" skipped="0" time="0.579951" >
+      <testcase name="test_hit_sets_is_hit" assertions="1" status="pass" classname="tests/unit/test_ufo.gd" time="0.096458" >
+      </testcase>
+      <testcase name="test_hit_emits_ufo_destroyed" assertions="1" status="pass" classname="tests/unit/test_ufo.gd" time="0.096705" >
+      </testcase>
+      <testcase name="test_hit_emits_valid_point_value" assertions="2" status="pass" classname="tests/unit/test_ufo.gd" time="0.096646" >
+      </testcase>
+      <testcase name="test_hit_is_idempotent" assertions="1" status="pass" classname="tests/unit/test_ufo.gd" time="0.09707" >
+      </testcase>
+      <testcase name="test_ufo_emits_exited_when_off_screen_right" assertions="1" status="pass" classname="tests/unit/test_ufo.gd" time="0.096422" >
+      </testcase>
+      <testcase name="test_ufo_emits_exited_when_off_screen_left" assertions="1" status="pass" classname="tests/unit/test_ufo.gd" time="0.09665" >
+      </testcase>
+  </testsuite>
+</testsuites>

@@ -2,21 +2,57 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Development Rules
+
+- Always implement unit tests for code that makes sense to test in this way.
+
 ## Project Overview
 
 Space Invaders clone built with **Godot 4.6** using **GDScript**. 2D, GL Compatibility renderer, 800×600 viewport.
+
+## Godot Executable
+
+```bash
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64
+```
+
+(`/home/bin/godot` is a directory, not a symlink.)
 
 ## Running the Game
 
 ```bash
 # Interactive (opens window)
-godot --path /home/gustavo/src/space-invaders
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64 --path /home/gustavo/src/space-invaders
 
 # Headless (no window, useful for syntax checks)
-godot --headless --path /home/gustavo/src/space-invaders
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64 --headless --path /home/gustavo/src/space-invaders
 ```
 
-No test framework is configured. Verification is manual (see `docs/plan.md`).
+## Running Tests
+
+Tests use **GUT 9.6.0** (installed in `addons/gut/`, configured in `.gutconfig.json`).
+
+```bash
+# Run all tests (headless, with JUnit XML output)
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64 --headless \
+  -s addons/gut/gut_cmdln.gd \
+  -gdir=res://tests \
+  -ginclude_subdirs \
+  -gjunit_xml_file=res://test_results.xml \
+  -gexit
+
+# Run a single test script
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64 --headless \
+  -s addons/gut/gut_cmdln.gd \
+  -gtest=res://tests/unit/test_alien.gd \
+  -gexit
+```
+
+Test files live in `tests/unit/` and `tests/integration/`. Each file extends `GutTest`; test methods are prefixed `test_`.
+
+**GDScript gotcha in tests**: accessing elements of an untyped `Array` (like `formation.aliens[i]`) requires `var x = arr[i]` (not `:=`) to avoid parse errors. Helper functions that return scene instances should omit the return-type annotation so callers can access script-defined properties dynamically.
+
+**Group ownership**: `"alien"` group is added by `alien_formation.gd`, not `alien.gd`. Tests that instantiate aliens standalone must call `alien.add_to_group("alien")` manually.
 
 ## Architecture
 

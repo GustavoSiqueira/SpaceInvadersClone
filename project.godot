@@ -25,6 +25,10 @@ window/size/viewport_height=600
 
 project/assembly_name="space-invaders"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
 [physics]
 
 2d/physics_engine="GodotPhysics2D"
