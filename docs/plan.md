@@ -91,9 +91,9 @@
 - [ ] Explosion animations (brief flash or sprite frames)
 - [ ] Player explosion animation
 - [ ] UFO loop sound while on screen
-- [ ] Persistent hi-score via ConfigFile
+- [X] Persistent hi-score via ConfigFile
 - [ ] Start/title screen
-- [ ] Pause menu
+- [X] Pause menu
 
 ---
 
