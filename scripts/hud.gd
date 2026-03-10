@@ -22,3 +22,7 @@ func update_lives(lives: int) -> void:
 
 func show_game_over() -> void:
 	game_over_panel.show()
+
+
+func hide_game_over() -> void:
+	game_over_panel.hide()

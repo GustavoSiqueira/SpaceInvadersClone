@@ -36,7 +36,23 @@ func _save_hi_score() -> void:
 	cfg.save(HI_SCORE_PATH)
 
 
+func _setup_input_actions() -> void:
+	_map_key_action(&"move_left", KEY_LEFT)
+	_map_key_action(&"move_right", KEY_RIGHT)
+	_map_key_action(&"shoot", KEY_SPACE)
+	_map_key_action(&"restart", KEY_F5)
+
+
+func _map_key_action(action: StringName, keycode: Key) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	var event := InputEventKey.new()
+	event.keycode = keycode
+	InputMap.action_add_event(action, event)
+
+
 func _ready() -> void:
+	_setup_input_actions()
 	_load_hi_score()
 	hud.update_score(score, hi_score)
 	player.bullets_container = player_bullets
@@ -165,3 +181,47 @@ func _game_over() -> void:
 	if formation and is_instance_valid(formation):
 		formation.stop()
 	hud.show_game_over()
+
+
+func _input(event: InputEvent) -> void:
+	if game_active:
+		return
+	if event.is_action_pressed("restart"):
+		_restart_game()
+
+
+func _restart_game() -> void:
+	# Reset state
+	score = 0
+	lives = 3
+	wave = 1
+	game_active = true
+
+	# Clear bullets
+	for b in player_bullets.get_children():
+		b.queue_free()
+	for b in enemy_bullets.get_children():
+		b.queue_free()
+
+	# Clear UFO
+	if ufo and is_instance_valid(ufo):
+		ufo.queue_free()
+	ufo = null
+
+	# Rebuild shields
+	for s in shields.get_children():
+		s.queue_free()
+	await get_tree().process_frame
+	_spawn_shields()
+
+	# Respawn player
+	player.respawn()
+
+	# Spawn fresh formation
+	_spawn_formation()
+	_reset_ufo_timer()
+
+	# Update HUD
+	hud.update_score(score, hi_score)
+	hud.update_lives(lives)
+	hud.hide_game_over()

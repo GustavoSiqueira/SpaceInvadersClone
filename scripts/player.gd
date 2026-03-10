@@ -20,12 +20,12 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_alive:
 		return
-	var dir := int(Input.is_action_pressed("ui_right")) - int(Input.is_action_pressed("ui_left"))
+	var dir := int(Input.is_action_pressed("move_right")) - int(Input.is_action_pressed("move_left"))
 	# Direct position update — no gravity or wall collisions needed.
 	position.x += dir * SPEED * delta
 	position.x = clampf(position.x, 24.0, 776.0)
 
-	if Input.is_action_just_pressed("ui_accept"):
+	if Input.is_action_just_pressed("shoot"):
 		_shoot()
 
 
