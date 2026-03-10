@@ -11,6 +11,10 @@ const SHIELD_SCENE = preload("res://scenes/shield.tscn")
 @onready var hud: CanvasLayer = $HUD
 @onready var ufo_timer: Timer = $UFOTimer
 
+const HI_SCORE_PATH := "user://hi_score.cfg"
+const HI_SCORE_SECTION := "scores"
+const HI_SCORE_KEY := "hi_score"
+
 var score: int = 0
 var hi_score: int = 0
 var lives: int = 3
@@ -20,7 +24,21 @@ var ufo: Area2D = null
 var game_active: bool = true
 
 
+func _load_hi_score() -> void:
+	var cfg := ConfigFile.new()
+	if cfg.load(HI_SCORE_PATH) == OK:
+		hi_score = cfg.get_value(HI_SCORE_SECTION, HI_SCORE_KEY, 0)
+
+
+func _save_hi_score() -> void:
+	var cfg := ConfigFile.new()
+	cfg.set_value(HI_SCORE_SECTION, HI_SCORE_KEY, hi_score)
+	cfg.save(HI_SCORE_PATH)
+
+
 func _ready() -> void:
+	_load_hi_score()
+	hud.update_score(score, hi_score)
 	player.bullets_container = player_bullets
 	player.player_hit.connect(_on_player_hit)
 	ufo_timer.timeout.connect(_on_ufo_timer_timeout)
@@ -105,6 +123,7 @@ func _add_score(pts: int) -> void:
 	score += pts
 	if score > hi_score:
 		hi_score = score
+		_save_hi_score()
 	hud.update_score(score, hi_score)
 
 

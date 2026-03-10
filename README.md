@@ -98,10 +98,10 @@ Main (Node2D)                    ← main.gd
 ├── UFO (Area2D)?                ← ufo.gd            [spawned on timer]
 ├── Boundary × 2 (Area2D)       ← built by main.gd   [top + bottom edges]
 └── HUD (CanvasLayer)            ← hud.gd
-    ├── ScoreLabel
-    ├── HiScoreLabel
-    ├── LivesLabel
-    └── GameOverPanel
+	├── ScoreLabel
+	├── HiScoreLabel
+	├── LivesLabel
+	└── GameOverPanel
 ```
 
 ### Design Patterns

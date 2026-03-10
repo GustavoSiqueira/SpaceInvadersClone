@@ -8,7 +8,6 @@ extends CanvasLayer
 
 func _ready() -> void:
 	game_over_panel.hide()
-	update_score(0, 0)
 	update_lives(3)
 
 
