@@ -19,6 +19,7 @@
 | `scenes/shield.tscn` | Node2D | `scripts/shield.gd` | [x] |
 | `scenes/ufo.tscn` | Area2D | `scripts/ufo.gd` | [x] |
 | `scenes/hud.tscn` | CanvasLayer | `scripts/hud.gd` | [x] |
+| `scenes/title_screen.tscn` | Control | `scripts/title_screen.gd` | [x] |
 
 ---
 
@@ -92,7 +93,7 @@
 - [ ] Player explosion animation
 - [ ] UFO loop sound while on screen
 - [X] Persistent hi-score via ConfigFile
-- [ ] Start/title screen
+- [x] Start/title screen
 - [X] Pause menu
 - [ ] Translations
 - [ ] Joystick support

@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://title001"]
+
+[ext_resource type="Script" path="res://scripts/title_screen.gd" id="1_title"]
+
+[node name="TitleScreen" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_title")
+
+[node name="LogoArea" type="Control" parent="."]
+anchor_right = 1.0
+offset_bottom = 400.0
+
+[node name="TitleLabel" type="Label" parent="LogoArea"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "SPACE INVADERS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MenuArea" type="Control" parent="."]
+anchor_right = 1.0
+offset_top = 400.0
+offset_bottom = 600.0
+
+[node name="MenuContainer" type="VBoxContainer" parent="MenuArea"]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_right = 120.0
+offset_top = 20.0
+offset_bottom = 170.0
+
+[node name="NewGameButton" type="Button" parent="MenuArea/MenuContainer"]
+custom_minimum_size = Vector2(240, 40)
+text = "New Game"
+
+[node name="OptionsButton" type="Button" parent="MenuArea/MenuContainer"]
+custom_minimum_size = Vector2(240, 40)
+text = "Options"
+disabled = true
+
+[node name="ExitButton" type="Button" parent="MenuArea/MenuContainer"]
+custom_minimum_size = Vector2(240, 40)
+text = "Exit"

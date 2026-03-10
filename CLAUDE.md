@@ -5,6 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Rules
 
 - Always implement unit tests for code that makes sense to test in this way.
+- Keep `README.md` updated whenever new functionality is added or design decisions change.
+- After completing a feature, mark it done in `docs/plan.md`.
 
 ## Project Overview
 
@@ -60,6 +62,7 @@ Test files live in `tests/unit/` and `tests/integration/`. Each file extends `Gu
 
 | Scene | Root | Script | Role |
 |---|---|---|---|
+| `title_screen.tscn` | Control | `title_screen.gd` | Entry point — logo + menu (New Game / Options stub / Exit) |
 | `main.tscn` | Node2D | `main.gd` | Game controller — owns all other nodes, handles input, score, lives, wave |
 | `player.tscn` | CharacterBody2D | `player.gd` | Player ship — movement, shooting, hit/respawn |
 | `alien.tscn` | Area2D | `alien.gd` | Single alien — type, points, 2-frame animation |
@@ -96,6 +99,11 @@ Bullets call methods directly on what they hit (`area.kill()`, `body.hit()`, `ar
 
 - **PlayerBullet** mask = 114 (aliens + shields + ufo + boundary)
 - **EnemyBullet** mask = 81 (player + shields + boundary)
+- Next free layer: 8 (bit 128)
+
+### Scene Flow
+
+`title_screen.tscn` is the `run/main_scene`. "New Game" calls `get_tree().change_scene_to_file("res://scenes/main.tscn")`. After game-over the player presses F5 to restart (reloads `main.tscn`); there is no automatic return to title yet.
 
 ### Key Implementation Details
 

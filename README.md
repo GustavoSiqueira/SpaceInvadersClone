@@ -65,9 +65,9 @@ Tests use **GUT 9.6.0** (already installed in `addons/gut/`).
 
 | Suite | Scripts | Tests |
 |---|---|---|
-| `tests/unit/` | 5 | 59 |
+| `tests/unit/` | 6 | 70 |
 | `tests/integration/` | 1 | 7 |
-| **Total** | **6** | **66** |
+| **Total** | **7** | **77** |
 
 ---
 
@@ -76,7 +76,8 @@ Tests use **GUT 9.6.0** (already installed in `addons/gut/`).
 ```
 space-invaders/
 ├── scenes/              # Scene files (.tscn)
-│   ├── main.tscn        # Root scene — game entry point
+│   ├── title_screen.tscn  # Entry point — title/menu screen
+│   ├── main.tscn          # Root game scene
 │   ├── player.tscn
 │   ├── alien.tscn
 │   ├── alien_formation.tscn
@@ -86,6 +87,7 @@ space-invaders/
 │   ├── ufo.tscn
 │   └── hud.tscn
 ├── scripts/             # GDScript files (.gd), one per scene
+│   ├── title_screen.gd
 │   ├── main.gd
 │   ├── player.gd
 │   ├── alien.gd
@@ -307,13 +309,15 @@ To apply the font project-wide, create a `Theme` resource (`Project → Project 
 
 ### Start Screen / Scene Transitions
 
-Create `scenes/title.tscn` with a "Press Start" label. On input, call:
+The title screen (`scenes/title_screen.tscn`) is the game entry point. It shows a "SPACE INVADERS" logo and a menu with **New Game**, **Options** (disabled stub), and **Exit** buttons. Keyboard navigation works via Godot's built-in focus system (`ui_up`/`ui_down`/`ui_accept`).
+
+Pressing **New Game** calls:
 
 ```gdscript
 get_tree().change_scene_to_file("res://scenes/main.tscn")
 ```
 
-Update `project.godot` to point `run/main_scene` at `scenes/title.tscn`.
+`project.godot` points `run/main_scene` at `res://scenes/title_screen.tscn`.
 
 ---
 
@@ -324,4 +328,3 @@ See `docs/plan.md` for the full tracked checklist. High-level items still open:
 - Sprite art (all visuals are `Polygon2D` placeholder shapes)
 - Sound effects and music
 - Explosion animations
-- Title/start screen
