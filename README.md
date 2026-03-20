@@ -40,6 +40,7 @@ Open the project folder in the Godot editor and press **F5**, or from a terminal
 | Fire | Space or Enter |
 | Pause / Resume | Escape |
 | Restart (game over) | F5 |
+| Toggle CRT effect | S |
 
 ---
 
@@ -85,7 +86,8 @@ space-invaders/
 │   ├── enemy_bullet.tscn
 │   ├── shield.tscn
 │   ├── ufo.tscn
-│   └── hud.tscn
+│   ├── hud.tscn
+│   └── crt_effect.tscn    # CRT post-processing overlay (scanlines + vignette)
 ├── scripts/             # GDScript files (.gd), one per scene
 │   ├── title_screen.gd
 │   ├── main.gd
@@ -96,7 +98,10 @@ space-invaders/
 │   ├── enemy_bullet.gd
 │   ├── shield.gd
 │   ├── ufo.gd
-│   └── hud.gd
+│   ├── hud.gd
+│   └── crt_effect.gd
+├── shaders/             # GLSL shader files (.gdshader)
+│   └── crt_effect.gdshader
 ├── tests/
 │   ├── unit/            # GUT unit tests (one file per script under test)
 │   └── integration/     # GUT integration tests (bullet collision scenarios)
@@ -134,12 +139,14 @@ Main (Node2D)                    ← main.gd
 │   └── Alien × 55 (Area2D)     ← alien.gd
 ├── UFO (Area2D)?                ← ufo.gd            [spawned on timer]
 ├── Boundary × 2 (Area2D)       ← built by main.gd   [top + bottom edges]
-└── HUD (CanvasLayer)            ← hud.gd  [PROCESS_MODE_ALWAYS]
-	├── ScoreLabel
-	├── HiScoreLabel
-	├── LivesLabel
-	├── GameOverPanel
-	└── PausePanel
+├── HUD (CanvasLayer)            ← hud.gd  [PROCESS_MODE_ALWAYS]
+│   ├── ScoreLabel
+│   ├── HiScoreLabel
+│   ├── LivesLabel
+│   ├── GameOverPanel
+│   └── PausePanel
+└── CRTEffect (CanvasLayer)      ← crt_effect.gd  [layer 100, PROCESS_MODE_ALWAYS]
+	└── Overlay (ColorRect)      ← ShaderMaterial using crt_effect.gdshader
 ```
 
 ### Design Patterns
@@ -318,6 +325,30 @@ get_tree().change_scene_to_file("res://scenes/main.tscn")
 ```
 
 `project.godot` points `run/main_scene` at `res://scenes/title_screen.tscn`.
+
+---
+
+## CRT Effect
+
+A post-processing overlay (`scenes/crt_effect.tscn`) renders a scanline and vignette effect on top of all game content. It is present in both the title screen and the main game scene.
+
+Three properties are exposed in the Godot Inspector and can be tuned without touching code:
+
+| Property | Range | Default | Effect |
+|---|---|---|---|
+| `scanline_count` | 50 – 1000 | 300 | Density of horizontal scanline bands |
+| `scanline_intensity` | 0 – 1 | 0.35 | How dark the scanline troughs are |
+| `vignette_intensity` | 0 – 1 | 0.45 | How dark the screen edges are |
+
+Press **S** at any time to toggle the effect on/off. The `CRTEffect` CanvasLayer runs at `PROCESS_MODE_ALWAYS` so the shortcut works even while the game is paused.
+
+The implementation lives in:
+
+```
+shaders/crt_effect.gdshader   — GLSL shader (scanlines + vignette)
+scripts/crt_effect.gd         — exported properties, toggle input
+scenes/crt_effect.tscn        — CanvasLayer (layer 100) + ColorRect
+```
 
 ---
 

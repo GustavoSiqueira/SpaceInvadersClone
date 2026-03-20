@@ -98,7 +98,7 @@
 - [ ] Translations
 - [ ] Joystick support
 - [ ] Custom key mappings
-- [ ] CRT effect
+- [x] CRT effect
 - [ ] Adjust aspect ratio and handle different resolutions or screen resizes
 
 ---

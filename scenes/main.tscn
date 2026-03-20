@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://du7ijnu64vg8m" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://hud001" path="res://scenes/hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" path="res://scenes/crt_effect.tscn" id="4_crt"]
 
 [node name="Main" type="Node2D" unique_id=1504647185]
 script = ExtResource("1_main")
@@ -21,3 +22,5 @@ wait_time = 20.0
 one_shot = true
 
 [node name="HUD" parent="." unique_id=1191165711 instance=ExtResource("3_hud")]
+
+[node name="CRTEffect" parent="." instance=ExtResource("4_crt")]
