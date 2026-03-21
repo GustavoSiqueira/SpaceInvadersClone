@@ -64,3 +64,9 @@ static func set_crt_enabled(value: bool) -> void:
 static func _reset_for_test() -> void:
 	_data = {}
 	_loaded = false
+
+## Deletes the persisted settings file. For use in unit tests only.
+static func _delete_file_for_test() -> void:
+	var dir := DirAccess.open("user://")
+	if dir:
+		dir.remove("settings.cfg")

@@ -2,6 +2,7 @@ extends GutTest
 
 
 func before_each() -> void:
+	Settings._delete_file_for_test()
 	Settings._reset_for_test()
 
 

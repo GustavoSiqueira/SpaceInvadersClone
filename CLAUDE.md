@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Space Invaders clone built with **Godot 4.6** using **GDScript**. 2D, GL Compatibility renderer, 800×600 viewport.
+Space Invaders clone built with **Godot 4.6** using **GDScript**. 2D, GL Compatibility renderer, 800×600 logical viewport. Stretch mode: `canvas_items` / aspect: `keep` (letterbox on non-4:3 screens).
 
 ## Godot Executable
 
@@ -62,7 +62,8 @@ Test files live in `tests/unit/` and `tests/integration/`. Each file extends `Gu
 
 | Scene | Root | Script | Role |
 |---|---|---|---|
-| `title_screen.tscn` | Control | `title_screen.gd` | Entry point — logo + menu (New Game / Options stub / Exit) |
+| `title_screen.tscn` | Control | `title_screen.gd` | Entry point — logo + menu (New Game / Options / Exit) |
+| `options_screen.tscn` | Control | `options_screen.gd` | Key rebinding UI + CRT toggle + audio stubs |
 | `main.tscn` | Node2D | `main.gd` | Game controller — owns all other nodes, handles input, score, lives, wave |
 | `player.tscn` | CharacterBody2D | `player.gd` | Player ship — movement, shooting, hit/respawn |
 | `alien.tscn` | Area2D | `alien.gd` | Single alien — type, points, 2-frame animation |
@@ -72,6 +73,9 @@ Test files live in `tests/unit/` and `tests/integration/`. Each file extends `Gu
 | `shield.tscn` | Node2D | `shield.gd` | Bunker — builds 8×4 grid of `Area2D` segments at runtime |
 | `ufo.tscn` | Area2D | `ufo.gd` | Bonus UFO — flies across top, awards random points |
 | `hud.tscn` | CanvasLayer | `hud.gd` | Score, hi-score, lives, game-over panel, pause panel |
+| `crt_effect.tscn` | — | *(shader only)* | Full-screen CRT scanline/vignette overlay; belongs to group `"crt_effect"` |
+
+`settings.gd` declares `class_name Settings` — a static class (no autoload needed) that persists key bindings and CRT preference to `user://settings.cfg`. Call `Settings.load()` before reading values; call `Settings.save()` after writing. In unit tests: call `Settings._delete_file_for_test()` then `Settings._reset_for_test()` in `before_each` to ensure a fully clean state (the reset clears in-memory state; the delete removes the persisted file so saved user customisations don't leak into default-value tests).
 
 ### Signal Flow
 
@@ -103,12 +107,12 @@ Bullets call methods directly on what they hit (`area.kill()`, `body.hit()`, `ar
 
 ### Scene Flow
 
-`title_screen.tscn` is the `run/main_scene`. "New Game" calls `get_tree().change_scene_to_file("res://scenes/main.tscn")`. After game-over the player presses F5 to restart (reloads `main.tscn`); there is no automatic return to title yet.
+`title_screen.tscn` is the `run/main_scene`. "New Game" → `main.tscn`; "Options" → `options_screen.tscn` → back to `title_screen.tscn`. After game-over the player presses F5 to restart (reloads `main.tscn`); there is no automatic return to title yet.
 
 ### Key Implementation Details
 
 - **Visuals**: All use `Polygon2D` — no external textures yet. Sprites in `assets/sprites/` are planned placeholders.
-- **Input actions** are registered at runtime in `main.gd._setup_input_actions()`: `move_left` (←), `move_right` (→), `shoot` (Space), `restart` (F5), `pause` (Escape).
+- **Input actions** are registered at runtime in `main.gd._setup_input_actions()` by reading from `Settings`: `move_left`, `move_right`, `shoot`, `restart`, `pause`. Defaults: ←, →, Space, F5, Escape. Keys are user-rebindable via the Options screen.
 - **Pause**: `get_tree().paused = true` freezes all `PROCESS_MODE_PAUSABLE` nodes. `main.gd` and `hud.tscn` root use `PROCESS_MODE_ALWAYS` so input and HUD remain live while paused.
 - **`alien.set_type()`** must be called **before** `add_child()` — colors are applied in `_ready()`.
 - **`player.bullets_container`** is injected by `main.gd._ready()` (parent `_ready` runs after children in Godot).

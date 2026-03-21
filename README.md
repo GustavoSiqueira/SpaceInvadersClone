@@ -13,7 +13,9 @@ A faithful Space Invaders clone built with Godot 4.6 and GDScript. The game feat
 | Renderer | GL Compatibility (OpenGL 3 / OpenGL ES 3) |
 | Physics | Godot Physics 2D |
 | Scene format | Godot TSCN (text-based) |
-| Window | 800 × 600 px |
+| Window | 800 × 600 px logical viewport (letterboxed on non-4:3 screens) |
+
+The game uses Godot's **canvas_items** stretch mode with **keep** aspect ratio. The entire scene is rendered at 800 × 600 and scaled uniformly to the window; black bars appear on the sides of 16:9 or wider displays. The 4:3 ratio is intentional — Space Invaders was originally a fixed-display arcade game.
 
 The **GL Compatibility** renderer is the right choice here: it targets the widest range of hardware (including integrated GPUs and low-end devices) and has no overhead for features a 2D game does not use. Forward+ and Mobile renderers add GPU instancing and clustered lighting that this project does not need.
 
