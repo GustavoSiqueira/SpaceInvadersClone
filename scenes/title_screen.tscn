@@ -39,7 +39,6 @@ text = "New Game"
 [node name="OptionsButton" type="Button" parent="MenuArea/MenuContainer"]
 custom_minimum_size = Vector2(240, 40)
 text = "Options"
-disabled = true
 
 [node name="ExitButton" type="Button" parent="MenuArea/MenuContainer"]
 custom_minimum_size = Vector2(240, 40)

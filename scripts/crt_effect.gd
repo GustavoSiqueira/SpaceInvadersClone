@@ -22,13 +22,11 @@ extends CanvasLayer
 
 
 func _ready() -> void:
+	Settings.load()
+	add_to_group("crt_effect")
 	_overlay.size = get_viewport().get_visible_rect().size
 	_update_shader()
-	if not InputMap.has_action(&"toggle_crt"):
-		InputMap.add_action(&"toggle_crt")
-		var event := InputEventKey.new()
-		event.keycode = KEY_S
-		InputMap.action_add_event(&"toggle_crt", event)
+	visible = Settings.get_crt_enabled()
 
 
 func _update_shader() -> void:
@@ -39,8 +37,3 @@ func _update_shader() -> void:
 		mat.set_shader_parameter("scanline_count", scanline_count)
 		mat.set_shader_parameter("scanline_intensity", scanline_intensity)
 		mat.set_shader_parameter("vignette_intensity", vignette_intensity)
-
-
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"toggle_crt"):
-		visible = not visible

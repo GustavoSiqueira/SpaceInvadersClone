@@ -38,11 +38,9 @@ func _save_hi_score() -> void:
 
 
 func _setup_input_actions() -> void:
-	_map_key_action(&"move_left", KEY_LEFT)
-	_map_key_action(&"move_right", KEY_RIGHT)
-	_map_key_action(&"shoot", KEY_SPACE)
-	_map_key_action(&"restart", KEY_F5)
-	_map_key_action(&"pause", KEY_ESCAPE)
+	Settings.load()
+	for action in ["move_left", "move_right", "shoot", "restart", "pause"]:
+		_map_key_action(action, Settings.get_keycode(action))
 
 
 func _map_key_action(action: StringName, keycode: Key) -> void:

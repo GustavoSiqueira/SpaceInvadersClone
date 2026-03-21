@@ -33,14 +33,15 @@ Open the project folder in the Godot editor and press **F5**, or from a terminal
 
 **Controls**
 
-| Action | Key |
+| Action | Default Key |
 |---|---|
 | Move left | Left Arrow |
 | Move right | Right Arrow |
-| Fire | Space or Enter |
+| Fire | Space |
 | Pause / Resume | Escape |
 | Restart (game over) | F5 |
-| Toggle CRT effect | S |
+
+All five actions can be rebound from the **Options** menu on the title screen.
 
 ---
 
@@ -66,9 +67,9 @@ Tests use **GUT 9.6.0** (already installed in `addons/gut/`).
 
 | Suite | Scripts | Tests |
 |---|---|---|
-| `tests/unit/` | 6 | 70 |
+| `tests/unit/` | 8 | 83 |
 | `tests/integration/` | 1 | 7 |
-| **Total** | **7** | **77** |
+| **Total** | **9** | **90** |
 
 ---
 
@@ -78,6 +79,7 @@ Tests use **GUT 9.6.0** (already installed in `addons/gut/`).
 space-invaders/
 ├── scenes/              # Scene files (.tscn)
 │   ├── title_screen.tscn  # Entry point — title/menu screen
+│   ├── options_screen.tscn # Options menu — key bindings, CRT toggle, audio stubs
 │   ├── main.tscn          # Root game scene
 │   ├── player.tscn
 │   ├── alien.tscn
@@ -90,6 +92,8 @@ space-invaders/
 │   └── crt_effect.tscn    # CRT post-processing overlay (scanlines + vignette)
 ├── scripts/             # GDScript files (.gd), one per scene
 │   ├── title_screen.gd
+│   ├── options_screen.gd
+│   ├── settings.gd        # Static class — user settings persistence (user://settings.cfg)
 │   ├── main.gd
 │   ├── player.gd
 │   ├── alien.gd
@@ -316,21 +320,44 @@ To apply the font project-wide, create a `Theme` resource (`Project → Project 
 
 ### Start Screen / Scene Transitions
 
-The title screen (`scenes/title_screen.tscn`) is the game entry point. It shows a "SPACE INVADERS" logo and a menu with **New Game**, **Options** (disabled stub), and **Exit** buttons. Keyboard navigation works via Godot's built-in focus system (`ui_up`/`ui_down`/`ui_accept`).
+The title screen (`scenes/title_screen.tscn`) is the game entry point. It shows a "SPACE INVADERS" logo and a menu with **New Game**, **Options**, and **Exit** buttons. Keyboard navigation works via Godot's built-in focus system (`ui_up`/`ui_down`/`ui_accept`).
 
-Pressing **New Game** calls:
-
-```gdscript
-get_tree().change_scene_to_file("res://scenes/main.tscn")
-```
+| Button | Action |
+|---|---|
+| New Game | `change_scene_to_file("res://scenes/main.tscn")` |
+| Options | `change_scene_to_file("res://scenes/options_screen.tscn")` |
+| Exit | `get_tree().quit()` |
 
 `project.godot` points `run/main_scene` at `res://scenes/title_screen.tscn`.
 
 ---
 
+## Options Menu
+
+Accessible from the title screen via the **Options** button. Settings are saved to `user://settings.cfg` (a `ConfigFile`) and loaded automatically on the next launch.
+
+### Key Bindings
+
+The five game actions can be rebound to any key:
+
+1. Click the button next to the action you want to rebind — it shows **"Press a key..."**
+2. Press the desired key. The binding is saved immediately.
+3. Press **Escape** to cancel without changing anything.
+4. If the chosen key is already used by another action, **"In use!"** is shown briefly and the old binding is kept.
+
+### CRT Effect Toggle
+
+A checkbox turns the scanline/vignette overlay on or off. The preference is persisted across sessions.
+
+### Audio Volume (coming soon)
+
+Music and SFX volume sliders are visible but inactive until audio assets are added.
+
+---
+
 ## CRT Effect
 
-A post-processing overlay (`scenes/crt_effect.tscn`) renders a scanline and vignette effect on top of all game content. It is present in both the title screen and the main game scene.
+A post-processing overlay (`scenes/crt_effect.tscn`) renders a scanline and vignette effect on top of all game content. It is present in the title screen, options screen, and the main game scene.
 
 Three properties are exposed in the Godot Inspector and can be tuned without touching code:
 
@@ -340,13 +367,13 @@ Three properties are exposed in the Godot Inspector and can be tuned without tou
 | `scanline_intensity` | 0 – 1 | 0.35 | How dark the scanline troughs are |
 | `vignette_intensity` | 0 – 1 | 0.45 | How dark the screen edges are |
 
-Press **S** at any time to toggle the effect on/off. The `CRTEffect` CanvasLayer runs at `PROCESS_MODE_ALWAYS` so the shortcut works even while the game is paused.
+The on/off state is controlled from the **Options** menu and persisted to `user://settings.cfg`.
 
 The implementation lives in:
 
 ```
 shaders/crt_effect.gdshader   — GLSL shader (scanlines + vignette)
-scripts/crt_effect.gd         — exported properties, toggle input
+scripts/crt_effect.gd         — exported properties, reads CRT preference from Settings
 scenes/crt_effect.tscn        — CanvasLayer (layer 100) + ColorRect
 ```
 

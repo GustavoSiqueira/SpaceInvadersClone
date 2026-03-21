@@ -50,10 +50,10 @@ func test_new_game_button_is_not_disabled() -> void:
 	assert_false(btn.disabled)
 
 
-func test_options_button_is_disabled() -> void:
+func test_options_button_is_enabled() -> void:
 	var ts = _make_title_screen()
 	var btn = ts.get_node("MenuArea/MenuContainer/OptionsButton")
-	assert_true(btn.disabled)
+	assert_false(btn.disabled)
 
 
 func test_script_has_on_new_game_pressed_method() -> void:
