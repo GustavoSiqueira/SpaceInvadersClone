@@ -103,7 +103,7 @@
 - [ ] Music volume control (Options stub — audio assets pending)
 - [ ] SFX volume control (Options stub — audio assets pending)
 - [x] CRT effect
-- [ ] Adjust aspect ratio and handle different resolutions or screen resizes
+- [x] Adjust aspect ratio and handle different resolutions or screen resizes
 
 ---
 
