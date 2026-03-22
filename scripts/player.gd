@@ -9,6 +9,7 @@ const BULLET_SCENE = preload("res://scenes/player_bullet.tscn")
 var bullets_container: Node2D = null
 
 var is_alive: bool = true
+var _hit_tween: Tween = null
 
 @onready var sprite: Polygon2D = $Sprite
 
@@ -41,11 +42,22 @@ func hit() -> void:
 	if not is_alive:
 		return
 	is_alive = false
-	sprite.color = Color.RED
 	player_hit.emit()
+	_play_hit_animation()
+
+
+func _play_hit_animation() -> void:
+	if _hit_tween:
+		_hit_tween.kill()
+	_hit_tween = create_tween().set_loops(5)
+	_hit_tween.tween_property(sprite, "color", Color.RED, 0.18)
+	_hit_tween.tween_property(sprite, "color", Color.WHITE, 0.12)
 
 
 func respawn() -> void:
+	if _hit_tween:
+		_hit_tween.kill()
+		_hit_tween = null
 	is_alive = true
 	position.x = 400.0
 	sprite.color = Color.WHITE

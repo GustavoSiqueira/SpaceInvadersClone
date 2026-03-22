@@ -32,6 +32,12 @@ func test_hit_is_idempotent() -> void:
 	assert_signal_emit_count(player, "player_hit", 1)
 
 
+func test_hit_starts_tween() -> void:
+	var player := _make_player()
+	player.hit()
+	assert_not_null(player._hit_tween)
+
+
 # --- respawn ---
 
 func test_respawn_sets_is_alive_true() -> void:
@@ -46,6 +52,14 @@ func test_respawn_resets_position_x() -> void:
 	player.position.x = 100.0
 	player.respawn()
 	assert_almost_eq(player.position.x, 400.0, 0.001)
+
+
+func test_respawn_clears_tween_and_resets_color() -> void:
+	var player := _make_player()
+	player.hit()
+	player.respawn()
+	assert_null(player._hit_tween)
+	assert_eq(player.get_node("Sprite").color, Color.WHITE)
 
 
 # --- _shoot ---
