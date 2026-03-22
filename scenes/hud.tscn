@@ -47,28 +47,33 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -50.0
-offset_right = 200.0
-offset_bottom = 60.0
+offset_left = -150.0
+offset_top = -100.0
+offset_right = 150.0
+offset_bottom = 100.0
 
-[node name="GameOverLabel" type="Label" parent="GameOverPanel"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 400.0
-offset_bottom = 60.0
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOverPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 12
+
+[node name="GameOverLabel" type="Label" parent="GameOverPanel/VBoxContainer"]
+layout_mode = 2
 text = "GAME OVER"
 horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_font_sizes/font_size = 24
 
-[node name="RestartLabel" type="Label" parent="GameOverPanel"]
-offset_left = 0.0
-offset_top = 60.0
-offset_right = 400.0
-offset_bottom = 110.0
-text = "Press F5 to restart"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="PlayAgainButton" type="Button" parent="GameOverPanel/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(220, 40)
+size_flags_horizontal = 4
+text = "Play Again  [F5]"
+
+[node name="TitleButton" type="Button" parent="GameOverPanel/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(220, 40)
+size_flags_horizontal = 4
+text = "Return to Title"
 
 [node name="PausePanel" type="Control" parent="."]
 visible = false

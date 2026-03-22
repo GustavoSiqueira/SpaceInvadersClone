@@ -3,11 +3,15 @@ extends CanvasLayer
 signal pause_toggled
 signal options_requested
 signal exit_requested
+signal restart_requested
+signal title_requested
 
 @onready var score_label: Label = $ScoreLabel
 @onready var hi_score_label: Label = $HiScoreLabel
 @onready var lives_label: Label = $LivesLabel
 @onready var game_over_panel: Control = $GameOverPanel
+@onready var play_again_button: Button = $GameOverPanel/VBoxContainer/PlayAgainButton
+@onready var title_button: Button = $GameOverPanel/VBoxContainer/TitleButton
 @onready var pause_panel: Control = $PausePanel
 @onready var resume_button: Button = $PausePanel/VBoxContainer/ResumeButton
 @onready var options_button: Button = $PausePanel/VBoxContainer/OptionsButton
@@ -18,22 +22,25 @@ func _ready() -> void:
 	game_over_panel.hide()
 	pause_panel.hide()
 	update_lives(3)
+	play_again_button.pressed.connect(func(): restart_requested.emit())
+	title_button.pressed.connect(func(): title_requested.emit())
 	resume_button.pressed.connect(func(): pause_toggled.emit())
 	options_button.pressed.connect(func(): options_requested.emit())
 	exit_button.pressed.connect(func(): exit_requested.emit())
 
 
 func update_score(score: int, hi_score: int) -> void:
-	score_label.text = "SCORE: %d" % score
-	hi_score_label.text = "HI: %d" % hi_score
+	score_label.text = tr("SCORE: %d") % score
+	hi_score_label.text = tr("HI: %d") % hi_score
 
 
 func update_lives(lives: int) -> void:
-	lives_label.text = "LIVES: %d" % lives
+	lives_label.text = tr("LIVES: %d") % lives
 
 
 func show_game_over() -> void:
 	game_over_panel.show()
+	play_again_button.grab_focus()
 
 
 func hide_game_over() -> void:
