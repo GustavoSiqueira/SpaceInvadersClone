@@ -115,7 +115,10 @@ space-invaders/
 ├── assets/
 │   ├── sprites/         # PNG sprite sheets (not yet created — see below)
 │   ├── audio/           # WAV/OGG sound effects and music
-│   └── fonts/           # TTF arcade font for HUD
+│   ├── fonts/           # TTF font files
+│   │   └── monogram-extended.ttf  # project-wide UI font
+│   └── theme/
+│       └── default_theme.tres     # Godot Theme — sets default font project-wide
 ├── docs/
 │   └── plan.md          # Implementation checklist
 ├── .gutconfig.json      # GUT CLI configuration
@@ -296,13 +299,11 @@ assets/audio/march_4.wav
 
 ---
 
-## Adding a Custom Font
+## Custom Font
 
-1. Drop a TTF or OTF file into `assets/fonts/` (e.g., `arcade.ttf`).
-2. In the Godot editor, create a **FontFile** resource or reference the TTF directly in each `Label`'s **Theme Overrides → Fonts → Font** property.
-3. Set font size under **Theme Overrides → Font Sizes**.
+The game uses **monogram-extended** (`assets/fonts/monogram-extended.ttf`) for all UI text. It is applied project-wide via a Godot `Theme` resource at `assets/theme/default_theme.tres`, registered in `project.godot` under `[gui] theme/custom`. This means every `Label`, `Button`, `CheckBox`, `OptionButton`, and other `Control` node inherits the font automatically — no per-node overrides needed.
 
-To apply the font project-wide, create a `Theme` resource (`Project → Project Settings → GUI → Theme → Custom`) and set the default Label font there.
+Individual nodes can still override font size via `theme_override_font_sizes/font_size` (used in `hud.tscn` and `options_screen.gd` for titles and separator labels).
 
 ---
 

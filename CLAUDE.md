@@ -126,6 +126,8 @@ During gameplay, pressing Escape opens the pause menu. "Options" from the pause 
 ### Key Implementation Details
 
 - **Visuals**: All use `Polygon2D` — no external textures yet. Sprites in `assets/sprites/` are planned placeholders.
+- **Font**: `assets/fonts/monogram-extended.ttf` is the project-wide font, applied via `assets/theme/default_theme.tres` (registered in `project.godot` under `[gui] theme/custom`).
+- **Background color**: viewport clear color is `#161616` (set in `project.godot` as `environment/defaults/default_clear_color`). The options screen `ColorRect` background matches this color.
 - **Input actions** are registered at runtime in `main.gd._setup_input_actions()` by reading from `Settings`: `move_left`, `move_right`, `shoot`, `restart`, `pause`. Defaults: ←, →, Space, F5, Escape. Keys are user-rebindable via the Options screen.
 - **Pause**: `get_tree().paused = true` freezes all `PROCESS_MODE_PAUSABLE` nodes. `main.gd` and `hud.tscn` root use `PROCESS_MODE_ALWAYS` so input and HUD remain live while paused. The pause menu (Resume / Options / Exit to Desktop) is built into `hud.tscn`'s `PausePanel`. Options opened from the pause menu inherits `PROCESS_MODE_ALWAYS` via the HUD CanvasLayer parent.
 - **`alien.set_type()`** must be called **before** `add_child()` — colors are applied in `_ready()`.

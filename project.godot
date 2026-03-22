@@ -40,8 +40,13 @@ locale/translations=PackedStringArray("res://assets/translations/en.de.translati
 2d/physics_engine="GodotPhysics2D"
 3d/physics_engine="Jolt Physics"
 
+[gui]
+
+theme/custom="res://assets/theme/default_theme.tres"
+
 [rendering]
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.0862745, 0.0862745, 0.0862745, 1)

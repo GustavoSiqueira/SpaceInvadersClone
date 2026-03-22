@@ -53,7 +53,7 @@ func _build_ui() -> void:
 
 	# Dark background
 	_ui_bg = ColorRect.new()
-	_ui_bg.color = Color(0.05, 0.05, 0.05, 1.0)
+	_ui_bg.color = Color(0.0862745, 0.0862745, 0.0862745, 1.0)
 	_ui_bg.anchor_right = 1.0
 	_ui_bg.anchor_bottom = 1.0
 	add_child(_ui_bg)
