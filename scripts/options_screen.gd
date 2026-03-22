@@ -62,29 +62,29 @@ func _build_ui() -> void:
 
 	# Title
 	var title := Label.new()
-	title.text = "OPTIONS"
+	title.text = tr("OPTIONS")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 28)
 	vbox.add_child(title)
 
-	_add_separator_label(vbox, "-- KEY BINDINGS --")
+	_add_separator_label(vbox, tr("-- KEY BINDINGS --"))
 
 	for action in REBINDABLE_ACTIONS:
 		_add_rebind_row(vbox, action)
 
-	_add_separator_label(vbox, "-- DISPLAY --")
+	_add_separator_label(vbox, tr("-- DISPLAY --"))
 
 	_add_crt_row(vbox)
 
-	_add_separator_label(vbox, "-- AUDIO (coming soon) --")
+	_add_separator_label(vbox, tr("-- AUDIO --"))
 
-	_add_slider_row(vbox, "Music Volume")
-	_add_slider_row(vbox, "SFX Volume")
+	_add_volume_row(vbox, tr("Music Volume"), Settings.get_music_volume(), _on_music_volume_changed)
+	_add_volume_row(vbox, tr("SFX Volume"),  Settings.get_sfx_volume(),   _on_sfx_volume_changed)
 
 	vbox.add_child(HSeparator.new())
 
 	var back_btn := Button.new()
-	back_btn.text = "Back"
+	back_btn.text = tr("Back")
 	back_btn.custom_minimum_size = Vector2(200.0, 40.0)
 	back_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	back_btn.pressed.connect(_on_back_pressed)
@@ -104,7 +104,7 @@ func _add_rebind_row(parent: VBoxContainer, action: String) -> void:
 	var row := HBoxContainer.new()
 
 	var lbl := Label.new()
-	lbl.text = ACTION_LABELS[action]
+	lbl.text = tr(ACTION_LABELS[action])
 	lbl.custom_minimum_size = Vector2(180.0, 0.0)
 	lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
@@ -123,7 +123,7 @@ func _add_crt_row(parent: VBoxContainer) -> void:
 	var row := HBoxContainer.new()
 
 	var lbl := Label.new()
-	lbl.text = "CRT Effect"
+	lbl.text = tr("CRT Effect")
 	lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var chk := CheckBox.new()
@@ -135,7 +135,7 @@ func _add_crt_row(parent: VBoxContainer) -> void:
 	parent.add_child(row)
 
 
-func _add_slider_row(parent: VBoxContainer, label_text: String) -> void:
+func _add_volume_row(parent: VBoxContainer, label_text: String, initial_value: float, callback: Callable) -> void:
 	var row := HBoxContainer.new()
 
 	var lbl := Label.new()
@@ -145,14 +145,35 @@ func _add_slider_row(parent: VBoxContainer, label_text: String) -> void:
 	var slider := HSlider.new()
 	slider.min_value = 0.0
 	slider.max_value = 1.0
-	slider.value = 1.0
+	slider.step = 0.05
+	slider.value = initial_value
 	slider.custom_minimum_size = Vector2(160.0, 0.0)
-	slider.editable = false
-	slider.focus_mode = Control.FOCUS_NONE
+	slider.value_changed.connect(callback)
 
 	row.add_child(lbl)
 	row.add_child(slider)
 	parent.add_child(row)
+
+
+func _on_music_volume_changed(value: float) -> void:
+	Settings.set_music_volume(value)
+	Settings.save()
+	_apply_bus_volume("Music", value)
+
+
+func _on_sfx_volume_changed(value: float) -> void:
+	Settings.set_sfx_volume(value)
+	Settings.save()
+	_apply_bus_volume("SFX", value)
+
+
+func _apply_bus_volume(bus_name: String, value: float) -> void:
+	var idx := AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		return  # bus not yet created — no-op until audio assets are added
+	var db := linear_to_db(value) if value > 0.001 else -80.0
+	AudioServer.set_bus_volume_db(idx, db)
+	AudioServer.set_bus_mute(idx, value <= 0.0)
 
 
 func _on_rebind_pressed(action: String) -> void:

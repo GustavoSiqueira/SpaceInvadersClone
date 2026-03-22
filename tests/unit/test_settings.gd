@@ -103,3 +103,51 @@ func test_save_and_reload_crt_disabled() -> void:
 	# Restore default
 	Settings.set_crt_enabled(true)
 	Settings.save()
+
+
+# --- Volume defaults ---
+
+func test_default_music_volume_is_one() -> void:
+	Settings.load()
+	assert_almost_eq(Settings.get_music_volume(), 1.0, 0.001)
+
+
+func test_default_sfx_volume_is_one() -> void:
+	Settings.load()
+	assert_almost_eq(Settings.get_sfx_volume(), 1.0, 0.001)
+
+
+func test_set_music_volume_round_trip() -> void:
+	Settings.load()
+	Settings.set_music_volume(0.5)
+	assert_almost_eq(Settings.get_music_volume(), 0.5, 0.001)
+
+
+func test_set_sfx_volume_round_trip() -> void:
+	Settings.load()
+	Settings.set_sfx_volume(0.25)
+	assert_almost_eq(Settings.get_sfx_volume(), 0.25, 0.001)
+
+
+func test_save_and_reload_music_volume() -> void:
+	Settings.load()
+	Settings.set_music_volume(0.7)
+	Settings.save()
+	Settings._reset_for_test()
+	Settings.load()
+	assert_almost_eq(Settings.get_music_volume(), 0.7, 0.001)
+	# Restore default
+	Settings.set_music_volume(1.0)
+	Settings.save()
+
+
+func test_save_and_reload_sfx_volume() -> void:
+	Settings.load()
+	Settings.set_sfx_volume(0.3)
+	Settings.save()
+	Settings._reset_for_test()
+	Settings.load()
+	assert_almost_eq(Settings.get_sfx_volume(), 0.3, 0.001)
+	# Restore default
+	Settings.set_sfx_volume(1.0)
+	Settings.save()

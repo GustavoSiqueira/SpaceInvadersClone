@@ -21,26 +21,32 @@ static func load() -> void:
 		return
 	_loaded = true
 	_data = {
-		"move_left":   DEFAULT_KEYS["move_left"],
-		"move_right":  DEFAULT_KEYS["move_right"],
-		"shoot":       DEFAULT_KEYS["shoot"],
-		"restart":     DEFAULT_KEYS["restart"],
-		"pause":       DEFAULT_KEYS["pause"],
-		"crt_enabled": true,
+		"move_left":    DEFAULT_KEYS["move_left"],
+		"move_right":   DEFAULT_KEYS["move_right"],
+		"shoot":        DEFAULT_KEYS["shoot"],
+		"restart":      DEFAULT_KEYS["restart"],
+		"pause":        DEFAULT_KEYS["pause"],
+		"crt_enabled":  true,
+		"music_volume": 1.0,
+		"sfx_volume":   1.0,
 	}
 	var cfg := ConfigFile.new()
 	if cfg.load(_PATH) != OK:
 		return
 	for action in DEFAULT_KEYS.keys():
 		_data[action] = cfg.get_value(_SEC_KEYS, action, _data[action])
-	_data["crt_enabled"] = cfg.get_value(_SEC_PREFS, "crt_enabled", true)
+	_data["crt_enabled"]  = cfg.get_value(_SEC_PREFS, "crt_enabled",  true)
+	_data["music_volume"] = cfg.get_value(_SEC_PREFS, "music_volume", 1.0)
+	_data["sfx_volume"]   = cfg.get_value(_SEC_PREFS, "sfx_volume",   1.0)
 
 
 static func save() -> void:
 	var cfg := ConfigFile.new()
 	for action in DEFAULT_KEYS.keys():
 		cfg.set_value(_SEC_KEYS, action, _data[action])
-	cfg.set_value(_SEC_PREFS, "crt_enabled", _data["crt_enabled"])
+	cfg.set_value(_SEC_PREFS, "crt_enabled",  _data["crt_enabled"])
+	cfg.set_value(_SEC_PREFS, "music_volume", _data["music_volume"])
+	cfg.set_value(_SEC_PREFS, "sfx_volume",   _data["sfx_volume"])
 	cfg.save(_PATH)
 
 
@@ -58,6 +64,22 @@ static func get_crt_enabled() -> bool:
 
 static func set_crt_enabled(value: bool) -> void:
 	_data["crt_enabled"] = value
+
+
+static func get_music_volume() -> float:
+	return _data.get("music_volume", 1.0)
+
+
+static func set_music_volume(value: float) -> void:
+	_data["music_volume"] = clampf(value, 0.0, 1.0)
+
+
+static func get_sfx_volume() -> float:
+	return _data.get("sfx_volume", 1.0)
+
+
+static func set_sfx_volume(value: float) -> void:
+	_data["sfx_volume"] = clampf(value, 0.0, 1.0)
 
 
 ## Resets all static state. For use in unit tests only.
