@@ -72,6 +72,13 @@ func test_kill_is_idempotent() -> void:
 	assert_signal_emit_count(alien, "killed", 1)
 
 
+func test_kill_disables_collision() -> void:
+	var alien := _make_alien(0)
+	alien.kill()
+	assert_eq(alien.collision_layer, 0)
+	assert_eq(alien.collision_mask, 0)
+
+
 # --- toggle_frame ---
 
 func test_toggle_frame_swaps_anim_frame_0_to_1() -> void:

@@ -36,5 +36,15 @@ func kill() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	collision_layer = 0
+	collision_mask = 0
+	monitoring = false
+	monitorable = false
 	killed.emit(points)
-	queue_free()
+	frame0.visible = true
+	frame1.visible = true
+	frame0.color = Color.YELLOW
+	frame1.color = Color.YELLOW
+	var tween := create_tween()
+	tween.tween_property(self, "modulate", Color(1.0, 1.0, 0.0, 0.0), 0.25)
+	tween.tween_callback(queue_free)
