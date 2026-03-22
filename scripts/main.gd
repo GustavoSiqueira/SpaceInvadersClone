@@ -44,6 +44,33 @@ func _setup_input_actions() -> void:
 		_map_key_action(action, Settings.get_keycode(action))
 
 
+func _add_joypad_defaults() -> void:
+	_map_joypad_axis("move_left",  JOY_AXIS_LEFT_X, -1.0)
+	_map_joypad_button("move_left",  JOY_BUTTON_DPAD_LEFT)
+	_map_joypad_axis("move_right", JOY_AXIS_LEFT_X,  1.0)
+	_map_joypad_button("move_right", JOY_BUTTON_DPAD_RIGHT)
+	_map_joypad_button("shoot",   JOY_BUTTON_A)
+	_map_joypad_button("pause",   JOY_BUTTON_START)
+	_map_joypad_button("restart", JOY_BUTTON_START)
+
+
+func _map_joypad_axis(action: StringName, axis: JoyAxis, value: float) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	var ev := InputEventJoypadMotion.new()
+	ev.axis = axis
+	ev.axis_value = value
+	InputMap.action_add_event(action, ev)
+
+
+func _map_joypad_button(action: StringName, button: JoyButton) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	var ev := InputEventJoypadButton.new()
+	ev.button_index = button
+	InputMap.action_add_event(action, ev)
+
+
 func _map_key_action(action: StringName, keycode: Key) -> void:
 	if not InputMap.has_action(action):
 		InputMap.add_action(action)
@@ -54,6 +81,7 @@ func _map_key_action(action: StringName, keycode: Key) -> void:
 
 func _ready() -> void:
 	_setup_input_actions()
+	_add_joypad_defaults()
 	_load_hi_score()
 	hud.update_score(score, hi_score)
 	player.bullets_container = player_bullets
@@ -62,6 +90,8 @@ func _ready() -> void:
 	hud.pause_toggled.connect(_toggle_pause)
 	hud.options_requested.connect(_on_options_requested)
 	hud.exit_requested.connect(func(): get_tree().quit())
+	hud.restart_requested.connect(_restart_game)
+	hud.title_requested.connect(func(): get_tree().change_scene_to_file("res://scenes/title_screen.tscn"))
 	_create_boundaries()
 	_spawn_shields()
 	_spawn_formation()

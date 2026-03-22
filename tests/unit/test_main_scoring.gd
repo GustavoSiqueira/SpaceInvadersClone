@@ -84,3 +84,21 @@ func test_restart_game_sets_game_active() -> void:
 	main.game_active = false
 	main._restart_game()
 	assert_true(main.game_active)
+
+
+# --- joypad defaults ---
+
+func test_move_left_has_joypad_events() -> void:
+	assert_true(InputMap.action_get_events("move_left").size() > 1)
+
+
+func test_move_right_has_joypad_events() -> void:
+	assert_true(InputMap.action_get_events("move_right").size() > 1)
+
+
+func test_shoot_has_joypad_event() -> void:
+	assert_true(InputMap.action_get_events("shoot").size() > 1)
+
+
+func test_pause_has_joypad_event() -> void:
+	assert_true(InputMap.action_get_events("pause").size() > 1)
