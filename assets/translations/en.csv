@@ -1,0 +1,27 @@
+keys,en
+SCORE: %d,"SCORE: %d"
+HI: %d,"HI: %d"
+LIVES: %d,"LIVES: %d"
+GAME OVER,GAME OVER
+Play Again  [F5],Play Again  [F5]
+Return to Title,Return to Title
+PAUSED,PAUSED
+Resume,Resume
+Options,Options
+Exit to Desktop,Exit to Desktop
+SPACE INVADERS,SPACE INVADERS
+New Game,New Game
+Exit,Exit
+OPTIONS,OPTIONS
+-- KEY BINDINGS --,-- KEY BINDINGS --
+-- DISPLAY --,-- DISPLAY --
+-- AUDIO --,-- AUDIO --
+CRT Effect,CRT Effect
+Music Volume,Music Volume
+SFX Volume,SFX Volume
+Back,Back
+Move Left,Move Left
+Move Right,Move Right
+Shoot,Shoot
+Pause,Pause
+Restart,Restart

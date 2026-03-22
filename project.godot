@@ -26,6 +26,10 @@ window/stretch/mode="canvas_items"
 
 project/assembly_name="space-invaders"
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://assets/translations/en.en.translation")
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
