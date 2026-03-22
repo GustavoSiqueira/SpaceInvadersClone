@@ -20,6 +20,7 @@ config/main_scene=""
 
 window/size/viewport_width=800
 window/size/viewport_height=600
+window/size/mode=3
 window/stretch/mode="canvas_items"
 
 [dotnet]
@@ -32,7 +33,7 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://assets/translations/en.en.translation")
+locale/translations=PackedStringArray("res://assets/translations/en.de.translation", "res://assets/translations/en.en.translation", "res://assets/translations/en.es.translation", "res://assets/translations/en.fr.translation", "res://assets/translations/en.it.translation", "res://assets/translations/en.pt_BR.translation")
 
 [physics]
 

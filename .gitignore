@@ -2,5 +2,8 @@
 .godot/
 /android/
 
+# Build artifacts
+build/
+
 # Test output
 test_results.xml
