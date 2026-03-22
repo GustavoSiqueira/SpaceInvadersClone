@@ -94,7 +94,7 @@
 - [ ] UFO loop sound while on screen
 - [X] Persistent hi-score via ConfigFile
 - [x] Start/title screen
-- [X] Pause menu
+- [x] Pause menu (Resume / Options / Exit to Desktop)
 - [ ] Translations
 - [ ] Joystick support
 - [x] Custom key mappings

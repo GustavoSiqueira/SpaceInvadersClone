@@ -3,6 +3,7 @@ extends Node2D
 const ALIEN_FORMATION_SCENE = preload("res://scenes/alien_formation.tscn")
 const UFO_SCENE = preload("res://scenes/ufo.tscn")
 const SHIELD_SCENE = preload("res://scenes/shield.tscn")
+const OPTIONS_SCENE = preload("res://scenes/options_screen.tscn")
 
 @onready var player: CharacterBody2D = $Player
 @onready var player_bullets: Node2D = $PlayerBullets
@@ -59,6 +60,8 @@ func _ready() -> void:
 	player.player_hit.connect(_on_player_hit)
 	ufo_timer.timeout.connect(_on_ufo_timer_timeout)
 	hud.pause_toggled.connect(_toggle_pause)
+	hud.options_requested.connect(_on_options_requested)
+	hud.exit_requested.connect(func(): get_tree().quit())
 	_create_boundaries()
 	_spawn_shields()
 	_spawn_formation()
@@ -198,6 +201,17 @@ func _toggle_pause() -> void:
 		hud.show_pause()
 	else:
 		hud.hide_pause()
+
+
+func _on_options_requested() -> void:
+	hud.hide_pause()
+	var opts = OPTIONS_SCENE.instantiate()
+	opts.overlay_mode = true
+	opts.closed.connect(func():
+		opts.queue_free()
+		hud.show_pause()
+	)
+	hud.add_child(opts)
 
 
 func _restart_game() -> void:

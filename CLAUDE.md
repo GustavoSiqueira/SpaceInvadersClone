@@ -50,7 +50,7 @@ Tests use **GUT 9.6.0** (installed in `addons/gut/`, configured in `.gutconfig.j
   -gexit
 ```
 
-Test files live in `tests/unit/` and `tests/integration/`. Each file extends `GutTest`; test methods are prefixed `test_`.
+Test files live in `tests/unit/` (9 scripts) and `tests/integration/` (1 script). Each file extends `GutTest`; test methods are prefixed `test_`.
 
 **GDScript gotcha in tests**: accessing elements of an untyped `Array` (like `formation.aliens[i]`) requires `var x = arr[i]` (not `:=`) to avoid parse errors. Helper functions that return scene instances should omit the return-type annotation so callers can access script-defined properties dynamically.
 
@@ -63,7 +63,7 @@ Test files live in `tests/unit/` and `tests/integration/`. Each file extends `Gu
 | Scene | Root | Script | Role |
 |---|---|---|---|
 | `title_screen.tscn` | Control | `title_screen.gd` | Entry point — logo + menu (New Game / Options / Exit) |
-| `options_screen.tscn` | Control | `options_screen.gd` | Key rebinding UI + CRT toggle + audio stubs |
+| `options_screen.tscn` | Control | `options_screen.gd` | Key rebinding UI + CRT toggle + audio stubs; supports `overlay_mode` for use from the pause menu |
 | `main.tscn` | Node2D | `main.gd` | Game controller — owns all other nodes, handles input, score, lives, wave |
 | `player.tscn` | CharacterBody2D | `player.gd` | Player ship — movement, shooting, hit/respawn |
 | `alien.tscn` | Area2D | `alien.gd` | Single alien — type, points, 2-frame animation |
@@ -72,7 +72,7 @@ Test files live in `tests/unit/` and `tests/integration/`. Each file extends `Gu
 | `enemy_bullet.tscn` | Area2D | `enemy_bullet.gd` | Enemy projectile — moves down, destroys player/shields |
 | `shield.tscn` | Node2D | `shield.gd` | Bunker — builds 8×4 grid of `Area2D` segments at runtime |
 | `ufo.tscn` | Area2D | `ufo.gd` | Bonus UFO — flies across top, awards random points |
-| `hud.tscn` | CanvasLayer | `hud.gd` | Score, hi-score, lives, game-over panel, pause panel |
+| `hud.tscn` | CanvasLayer | `hud.gd` | Score, hi-score, lives, game-over panel, pause menu (Resume / Options / Exit) |
 | `crt_effect.tscn` | — | *(shader only)* | Full-screen CRT scanline/vignette overlay; belongs to group `"crt_effect"` |
 
 `settings.gd` declares `class_name Settings` — a static class (no autoload needed) that persists key bindings and CRT preference to `user://settings.cfg`. Call `Settings.load()` before reading values; call `Settings.save()` after writing. In unit tests: call `Settings._delete_file_for_test()` then `Settings._reset_for_test()` in `before_each` to ensure a fully clean state (the reset clears in-memory state; the delete removes the persisted file so saved user customisations don't leak into default-value tests).
@@ -86,6 +86,9 @@ Game objects emit signals upward; `main.gd` is the single aggregator:
 - `alien_formation.aliens_reached_bottom` → `main._on_aliens_reached_bottom()`
 - `ufo.ufo_destroyed(pts)` → `main._on_ufo_destroyed(pts)`
 - `ufo_timer.timeout` → `main._on_ufo_timer_timeout()`
+- `hud.pause_toggled` → `main._toggle_pause()` (emitted by Escape key or Resume button)
+- `hud.options_requested` → `main._on_options_requested()` (opens options as CanvasLayer overlay)
+- `hud.exit_requested` → `get_tree().quit()`
 
 Bullets call methods directly on what they hit (`area.kill()`, `body.hit()`, `area.queue_free()`).
 
@@ -109,11 +112,13 @@ Bullets call methods directly on what they hit (`area.kill()`, `body.hit()`, `ar
 
 `title_screen.tscn` is the `run/main_scene`. "New Game" → `main.tscn`; "Options" → `options_screen.tscn` → back to `title_screen.tscn`. After game-over the player presses F5 to restart (reloads `main.tscn`); there is no automatic return to title yet.
 
+During gameplay, pressing Escape opens the pause menu. "Options" from the pause menu does **not** switch scenes — it instantiates `options_screen.tscn` with `overlay_mode = true` as a child of the HUD `CanvasLayer`, preserving all game state. When the overlay closes it emits `closed` and is freed.
+
 ### Key Implementation Details
 
 - **Visuals**: All use `Polygon2D` — no external textures yet. Sprites in `assets/sprites/` are planned placeholders.
 - **Input actions** are registered at runtime in `main.gd._setup_input_actions()` by reading from `Settings`: `move_left`, `move_right`, `shoot`, `restart`, `pause`. Defaults: ←, →, Space, F5, Escape. Keys are user-rebindable via the Options screen.
-- **Pause**: `get_tree().paused = true` freezes all `PROCESS_MODE_PAUSABLE` nodes. `main.gd` and `hud.tscn` root use `PROCESS_MODE_ALWAYS` so input and HUD remain live while paused.
+- **Pause**: `get_tree().paused = true` freezes all `PROCESS_MODE_PAUSABLE` nodes. `main.gd` and `hud.tscn` root use `PROCESS_MODE_ALWAYS` so input and HUD remain live while paused. The pause menu (Resume / Options / Exit to Desktop) is built into `hud.tscn`'s `PausePanel`. Options opened from the pause menu inherits `PROCESS_MODE_ALWAYS` via the HUD CanvasLayer parent.
 - **`alien.set_type()`** must be called **before** `add_child()` — colors are applied in `_ready()`.
 - **`player.bullets_container`** is injected by `main.gd._ready()` (parent `_ready` runs after children in Godot).
 - **Formation speed** scales with `alive_count / total` and `wave` number via `_recalc_speed()`.

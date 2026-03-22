@@ -43,7 +43,7 @@ Open the project folder in the Godot editor and press **F5**, or from a terminal
 | Pause / Resume | Escape |
 | Restart (game over) | F5 |
 
-All five actions can be rebound from the **Options** menu on the title screen.
+All five actions can be rebound from the **Options** menu on the title screen or pause menu.
 
 ---
 
@@ -69,9 +69,9 @@ Tests use **GUT 9.6.0** (already installed in `addons/gut/`).
 
 | Suite | Scripts | Tests |
 |---|---|---|
-| `tests/unit/` | 8 | 83 |
+| `tests/unit/` | 9 | 94 |
 | `tests/integration/` | 1 | 7 |
-| **Total** | **9** | **90** |
+| **Total** | **10** | **101** |
 
 ---
 
@@ -150,7 +150,7 @@ Main (Node2D)                    ← main.gd
 │   ├── HiScoreLabel
 │   ├── LivesLabel
 │   ├── GameOverPanel
-│   └── PausePanel
+│   └── PausePanel               ← Resume / Options / Exit buttons
 └── CRTEffect (CanvasLayer)      ← crt_effect.gd  [layer 100, PROCESS_MODE_ALWAYS]
 	└── Overlay (ColorRect)      ← ShaderMaterial using crt_effect.gdshader
 ```
@@ -334,9 +334,23 @@ The title screen (`scenes/title_screen.tscn`) is the game entry point. It shows 
 
 ---
 
+## Pause Menu
+
+Press **Escape** during gameplay to open the pause menu. The game freezes and a centered overlay appears with three choices:
+
+| Button | Action |
+|---|---|
+| Resume | Continue the game from where it was paused (Escape also works) |
+| Options | Open the Options screen as an overlay — game state is preserved |
+| Exit to Desktop | Quit the application |
+
+Keyboard navigation works via the built-in focus system (`ui_up`/`ui_down`/`ui_accept`). Focus is placed on **Resume** automatically when the menu opens.
+
+---
+
 ## Options Menu
 
-Accessible from the title screen via the **Options** button. Settings are saved to `user://settings.cfg` (a `ConfigFile`) and loaded automatically on the next launch.
+Accessible from the title screen **Options** button or from the in-game **Pause → Options**. Settings are saved to `user://settings.cfg` (a `ConfigFile`) and loaded automatically on the next launch.
 
 ### Key Bindings
 

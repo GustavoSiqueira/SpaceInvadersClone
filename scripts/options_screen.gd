@@ -1,5 +1,9 @@
 extends Control
 
+signal closed
+
+var overlay_mode: bool = false
+
 const REBINDABLE_ACTIONS: Array[String] = [
 	"move_left", "move_right", "shoot", "pause", "restart"
 ]
@@ -23,9 +27,10 @@ var _in_use_action: String = ""
 func _ready() -> void:
 	Settings.load()
 	_setup_in_use_timer()
-	# Add CRT overlay so options screen is consistent with the rest of the game
-	var crt = CRT_SCENE.instantiate()
-	add_child(crt)
+	if not overlay_mode:
+		# Add CRT overlay so options screen is consistent with the rest of the game
+		var crt = CRT_SCENE.instantiate()
+		add_child(crt)
 	_build_ui()
 
 
@@ -159,6 +164,10 @@ func _on_rebind_pressed(action: String) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if overlay_mode and _waiting_for_key == "" and event.is_action_pressed("pause"):
+		_on_back_pressed()
+		get_viewport().set_input_as_handled()
+		return
 	if _waiting_for_key == "":
 		return
 	if not (event is InputEventKey):
@@ -216,7 +225,10 @@ func _on_crt_toggled(pressed: bool) -> void:
 func _on_back_pressed() -> void:
 	if _waiting_for_key != "":
 		return  # block navigation while mid-rebind
-	get_tree().change_scene_to_file("res://scenes/title_screen.tscn")
+	if overlay_mode:
+		closed.emit()
+	else:
+		get_tree().change_scene_to_file("res://scenes/title_screen.tscn")
 
 
 func _apply_to_input_map(action: String, keycode: Key) -> void:
