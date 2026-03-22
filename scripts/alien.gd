@@ -36,10 +36,10 @@ func kill() -> void:
 	if is_dead:
 		return
 	is_dead = true
-	collision_layer = 0
-	collision_mask = 0
-	monitoring = false
-	monitorable = false
+	set_deferred("collision_layer", 0)
+	set_deferred("collision_mask", 0)
+	set_deferred("monitoring", false)
+	set_deferred("monitorable", false)
 	killed.emit(points)
 	frame0.visible = true
 	frame1.visible = true
