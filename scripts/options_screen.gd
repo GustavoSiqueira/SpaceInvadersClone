@@ -18,10 +18,17 @@ const ACTION_LABELS: Dictionary = {
 
 const CRT_SCENE := preload("res://scenes/crt_effect.tscn")
 
+const LANGUAGE_LOCALES: Array[String] = ["", "en", "pt_BR", "es", "fr", "de", "it"]
+const LANGUAGE_LABELS: Array[String] = [
+	"System Default", "English", "Português (Brasil)", "Español", "Français", "Deutsch", "Italiano"
+]
+
 var _rebind_buttons: Dictionary = {}   # action -> Button
 var _waiting_for_key: String = ""
 var _in_use_timer: Timer
 var _in_use_action: String = ""
+var _ui_bg: ColorRect
+var _ui_vbox: VBoxContainer
 
 
 func _ready() -> void:
@@ -42,23 +49,26 @@ func _setup_in_use_timer() -> void:
 
 
 func _build_ui() -> void:
+	_rebind_buttons.clear()
+
 	# Dark background
-	var bg := ColorRect.new()
-	bg.color = Color(0.05, 0.05, 0.05, 1.0)
-	bg.anchor_right = 1.0
-	bg.anchor_bottom = 1.0
-	add_child(bg)
+	_ui_bg = ColorRect.new()
+	_ui_bg.color = Color(0.05, 0.05, 0.05, 1.0)
+	_ui_bg.anchor_right = 1.0
+	_ui_bg.anchor_bottom = 1.0
+	add_child(_ui_bg)
 
 	# Centered VBoxContainer
-	var vbox := VBoxContainer.new()
-	vbox.anchor_left   = 0.5
-	vbox.anchor_right  = 0.5
-	vbox.anchor_top    = 0.08
-	vbox.anchor_bottom = 0.95
-	vbox.offset_left   = -260.0
-	vbox.offset_right  = 260.0
-	vbox.add_theme_constant_override("separation", 8)
-	add_child(vbox)
+	_ui_vbox = VBoxContainer.new()
+	_ui_vbox.anchor_left   = 0.5
+	_ui_vbox.anchor_right  = 0.5
+	_ui_vbox.anchor_top    = 0.08
+	_ui_vbox.anchor_bottom = 0.95
+	_ui_vbox.offset_left   = -260.0
+	_ui_vbox.offset_right  = 260.0
+	_ui_vbox.add_theme_constant_override("separation", 8)
+	add_child(_ui_vbox)
+	var vbox := _ui_vbox
 
 	# Title
 	var title := Label.new()
@@ -80,6 +90,10 @@ func _build_ui() -> void:
 
 	_add_volume_row(vbox, tr("Music Volume"), Settings.get_music_volume(), _on_music_volume_changed)
 	_add_volume_row(vbox, tr("SFX Volume"),  Settings.get_sfx_volume(),   _on_sfx_volume_changed)
+
+	_add_separator_label(vbox, tr("-- LANGUAGE --"))
+
+	_add_language_row(vbox)
 
 	vbox.add_child(HSeparator.new())
 
@@ -153,6 +167,46 @@ func _add_volume_row(parent: VBoxContainer, label_text: String, initial_value: f
 	row.add_child(lbl)
 	row.add_child(slider)
 	parent.add_child(row)
+
+
+func _add_language_row(parent: VBoxContainer) -> void:
+	var row := HBoxContainer.new()
+
+	var lbl := Label.new()
+	lbl.text = tr("Language")
+	lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var opt := OptionButton.new()
+	opt.custom_minimum_size = Vector2(200.0, 32.0)
+	var current_lang := Settings.get_language()
+	for i in LANGUAGE_LOCALES.size():
+		# Language names are always shown in their native script
+		var label := LANGUAGE_LABELS[i] if i > 0 else tr("System Default")
+		opt.add_item(label, i)
+		if LANGUAGE_LOCALES[i] == current_lang:
+			opt.select(i)
+	opt.item_selected.connect(_on_language_selected)
+
+	row.add_child(lbl)
+	row.add_child(opt)
+	parent.add_child(row)
+
+
+func _on_language_selected(index: int) -> void:
+	Settings.set_language(LANGUAGE_LOCALES[index])
+	Settings.save()
+	Settings.apply_language()
+	call_deferred("_rebuild_ui")
+
+
+func _rebuild_ui() -> void:
+	_waiting_for_key = ""
+	_in_use_action = ""
+	if _ui_bg:
+		_ui_bg.free()
+	if _ui_vbox:
+		_ui_vbox.free()
+	_build_ui()
 
 
 func _on_music_volume_changed(value: float) -> void:

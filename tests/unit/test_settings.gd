@@ -151,3 +151,42 @@ func test_save_and_reload_sfx_volume() -> void:
 	# Restore default
 	Settings.set_sfx_volume(1.0)
 	Settings.save()
+
+
+# --- Language ---
+
+func test_default_language_is_empty_string() -> void:
+	Settings.load()
+	assert_eq(Settings.get_language(), "")
+
+
+func test_set_language_round_trip() -> void:
+	Settings.load()
+	Settings.set_language("pt_BR")
+	assert_eq(Settings.get_language(), "pt_BR")
+
+
+func test_set_language_does_not_affect_other_settings() -> void:
+	Settings.load()
+	Settings.set_language("fr")
+	assert_eq(Settings.get_keycode("move_left"), KEY_LEFT)
+	assert_true(Settings.get_crt_enabled())
+
+
+func test_save_and_reload_language() -> void:
+	Settings.load()
+	Settings.set_language("de")
+	Settings.save()
+	Settings._reset_for_test()
+	Settings.load()
+	assert_eq(Settings.get_language(), "de")
+	# Restore default
+	Settings.set_language("")
+	Settings.save()
+
+
+func test_set_language_empty_restores_system_default() -> void:
+	Settings.load()
+	Settings.set_language("es")
+	Settings.set_language("")
+	assert_eq(Settings.get_language(), "")

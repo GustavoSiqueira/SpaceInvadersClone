@@ -6,6 +6,8 @@ extends Control
 
 
 func _ready() -> void:
+	Settings.load()
+	Settings.apply_language()
 	new_game_button.pressed.connect(_on_new_game_pressed)
 	options_button.pressed.connect(_on_options_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)

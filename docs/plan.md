@@ -95,7 +95,7 @@
 - [X] Persistent hi-score via ConfigFile
 - [x] Start/title screen
 - [x] Pause menu (Resume / Options / Exit to Desktop)
-- [ ] Translations
+- [x] Translations
 - [ ] Joystick support
 - [x] Custom key mappings
 - [x] Options menu (title screen)

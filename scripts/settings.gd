@@ -4,6 +4,8 @@ const _PATH := "user://settings.cfg"
 const _SEC_KEYS  := "keybindings"
 const _SEC_PREFS := "preferences"
 
+const SUPPORTED_LOCALES: Array[String] = ["en", "pt_BR", "es", "fr", "de", "it"]
+
 const DEFAULT_KEYS: Dictionary = {
 	"move_left":  KEY_LEFT,
 	"move_right": KEY_RIGHT,
@@ -29,6 +31,7 @@ static func load() -> void:
 		"crt_enabled":  true,
 		"music_volume": 1.0,
 		"sfx_volume":   1.0,
+		"language":     "",
 	}
 	var cfg := ConfigFile.new()
 	if cfg.load(_PATH) != OK:
@@ -38,6 +41,7 @@ static func load() -> void:
 	_data["crt_enabled"]  = cfg.get_value(_SEC_PREFS, "crt_enabled",  true)
 	_data["music_volume"] = cfg.get_value(_SEC_PREFS, "music_volume", 1.0)
 	_data["sfx_volume"]   = cfg.get_value(_SEC_PREFS, "sfx_volume",   1.0)
+	_data["language"]     = cfg.get_value(_SEC_PREFS, "language",     "")
 
 
 static func save() -> void:
@@ -47,6 +51,7 @@ static func save() -> void:
 	cfg.set_value(_SEC_PREFS, "crt_enabled",  _data["crt_enabled"])
 	cfg.set_value(_SEC_PREFS, "music_volume", _data["music_volume"])
 	cfg.set_value(_SEC_PREFS, "sfx_volume",   _data["sfx_volume"])
+	cfg.set_value(_SEC_PREFS, "language",     _data["language"])
 	cfg.save(_PATH)
 
 
@@ -80,6 +85,38 @@ static func get_sfx_volume() -> float:
 
 static func set_sfx_volume(value: float) -> void:
 	_data["sfx_volume"] = clampf(value, 0.0, 1.0)
+
+
+static func get_language() -> String:
+	return _data.get("language", "")
+
+
+static func set_language(value: String) -> void:
+	_data["language"] = value
+
+
+## Resolves the active locale and applies it to TranslationServer.
+## Uses the stored preference; if empty, falls back to system locale;
+## if system locale is unsupported, falls back to "en".
+static func apply_language() -> void:
+	var lang: String = _data.get("language", "")
+	if lang == "":
+		lang = _resolve_system_locale()
+	TranslationServer.set_locale(lang)
+
+
+static func _resolve_system_locale() -> String:
+	var sys := OS.get_locale()  # e.g. "pt_BR", "en_US", "fr_FR"
+	# Exact match first (important for pt_BR vs pt_PT)
+	for supported in SUPPORTED_LOCALES:
+		if sys == supported:
+			return supported
+	# Language-prefix match: "en_US" → "en", "es_MX" → "es"
+	var prefix := sys.split("_")[0]
+	for supported in SUPPORTED_LOCALES:
+		if supported == prefix or supported.split("_")[0] == prefix:
+			return supported
+	return "en"
 
 
 ## Resets all static state. For use in unit tests only.

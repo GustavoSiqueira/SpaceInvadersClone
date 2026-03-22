@@ -69,9 +69,9 @@ Tests use **GUT 9.6.0** (already installed in `addons/gut/`).
 
 | Suite | Scripts | Tests |
 |---|---|---|
-| `tests/unit/` | 9 | 94 |
+| `tests/unit/` | 9 | 118 |
 | `tests/integration/` | 1 | 7 |
-| **Total** | **10** | **101** |
+| **Total** | **10** | **125** |
 
 ---
 
@@ -369,6 +369,22 @@ A checkbox turns the scanline/vignette overlay on or off. The preference is pers
 
 Music and SFX volume sliders are visible but inactive until audio assets are added.
 
+### Language
+
+Choose the display language from the **-- LANGUAGE --** section. Available options:
+
+| Option | Locale |
+|---|---|
+| System Default | Matches the OS locale; falls back to English if unsupported |
+| English | `en` |
+| Português (Brasil) | `pt_BR` |
+| Español | `es` |
+| Français | `fr` |
+| Deutsch | `de` |
+| Italiano | `it` |
+
+When **System Default** is selected, the game reads `OS.get_locale()` at startup and picks the closest supported language. If none matches, English is used. The selected language is saved to `user://settings.cfg` and applied immediately — the Options menu rebuilds itself in the new language when you change the setting.
+
 ---
 
 ## CRT Effect
@@ -402,3 +418,4 @@ See `docs/plan.md` for the full tracked checklist. High-level items still open:
 - Sprite art (all visuals are `Polygon2D` placeholder shapes)
 - Sound effects and music
 - Explosion animations
+- Joystick support

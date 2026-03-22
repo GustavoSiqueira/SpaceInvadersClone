@@ -1,27 +1,30 @@
-keys,en
-SCORE: %d,"SCORE: %d"
-HI: %d,"HI: %d"
-LIVES: %d,"LIVES: %d"
-GAME OVER,GAME OVER
-Play Again  [F5],Play Again  [F5]
-Return to Title,Return to Title
-PAUSED,PAUSED
-Resume,Resume
-Options,Options
-Exit to Desktop,Exit to Desktop
-SPACE INVADERS,SPACE INVADERS
-New Game,New Game
-Exit,Exit
-OPTIONS,OPTIONS
--- KEY BINDINGS --,-- KEY BINDINGS --
--- DISPLAY --,-- DISPLAY --
--- AUDIO --,-- AUDIO --
-CRT Effect,CRT Effect
-Music Volume,Music Volume
-SFX Volume,SFX Volume
-Back,Back
-Move Left,Move Left
-Move Right,Move Right
-Shoot,Shoot
-Pause,Pause
-Restart,Restart
+keys,en,pt_BR,es,fr,de,it
+SCORE: %d,"SCORE: %d","PONTOS: %d","PUNTOS: %d","SCORE: %d","PUNKTE: %d","PUNTEGGIO: %d"
+HI: %d,"HI: %d","RECORDE: %d","RÉCORD: %d","RECORD: %d","REKORD: %d","RECORD: %d"
+LIVES: %d,"LIVES: %d","VIDAS: %d","VIDAS: %d","VIES: %d","LEBEN: %d","VITE: %d"
+GAME OVER,GAME OVER,FIM DE JOGO,FIN DEL JUEGO,PARTIE TERMINÉE,SPIEL VORBEI,FINE DEL GIOCO
+Play Again  [F5],"Play Again  [F5]","Jogar Novamente  [F5]","Jugar de Nuevo  [F5]","Rejouer  [F5]","Nochmal Spielen  [F5]","Gioca Ancora  [F5]"
+Return to Title,Return to Title,Voltar ao Menu,Volver al Menú,Retour au Menu,Zum Hauptmenü,Torna al Menu
+PAUSED,PAUSED,PAUSADO,PAUSADO,PAUSE,PAUSIERT,IN PAUSA
+Resume,Resume,Continuar,Continuar,Reprendre,Weiterspielen,Riprendi
+Options,Options,Opções,Opciones,Options,Optionen,Opzioni
+Exit to Desktop,Exit to Desktop,Sair do Jogo,Salir del Juego,Quitter le Jeu,Spiel Beenden,Esci dal Gioco
+SPACE INVADERS,SPACE INVADERS,SPACE INVADERS,SPACE INVADERS,SPACE INVADERS,SPACE INVADERS,SPACE INVADERS
+New Game,New Game,Novo Jogo,Nuevo Juego,Nouvelle Partie,Neues Spiel,Nuova Partita
+Exit,Exit,Sair,Salir,Quitter,Beenden,Esci
+OPTIONS,OPTIONS,OPÇÕES,OPCIONES,OPTIONS,OPTIONEN,OPZIONI
+-- KEY BINDINGS --,-- KEY BINDINGS --,-- TECLAS --,-- CONTROLES --,-- TOUCHES --,-- TASTEN --,-- TASTI --
+-- DISPLAY --,-- DISPLAY --,-- TELA --,-- PANTALLA --,-- AFFICHAGE --,-- ANZEIGE --,-- SCHERMO --
+-- AUDIO --,-- AUDIO --,-- ÁUDIO --,-- AUDIO --,-- AUDIO --,-- AUDIO --,-- AUDIO --
+CRT Effect,CRT Effect,Efeito CRT,Efecto CRT,Effet CRT,CRT-Effekt,Effetto CRT
+Music Volume,Music Volume,Volume da Música,Volumen Música,Volume Musique,Musiklautstärke,Volume Musica
+SFX Volume,SFX Volume,Volume dos Efeitos,Volumen Efectos,Volume Effets,Effektlautstärke,Volume Effetti
+Back,Back,Voltar,Volver,Retour,Zurück,Indietro
+Move Left,Move Left,Mover Esquerda,Mover Izquierda,Aller à Gauche,Links Bewegen,Muovi a Sinistra
+Move Right,Move Right,Mover Direita,Mover Derecha,Aller à Droite,Rechts Bewegen,Muovi a Destra
+Shoot,Shoot,Atirar,Disparar,Tirer,Schießen,Spara
+Pause,Pause,Pausar,Pausar,Pause,Pausieren,Pausa
+Restart,Restart,Reiniciar,Reiniciar,Redémarrer,Neustart,Ricomincia
+-- LANGUAGE --,-- LANGUAGE --,-- IDIOMA --,-- IDIOMA --,-- LANGUE --,-- SPRACHE --,-- LINGUA --
+Language,Language,Idioma,Idioma,Langue,Sprache,Lingua
+System Default,System Default,Padrão do Sistema,Idioma del Sistema,Langue du Système,Systemsprache,Lingua di Sistema

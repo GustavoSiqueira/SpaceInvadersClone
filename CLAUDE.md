@@ -50,11 +50,20 @@ Tests use **GUT 9.6.0** (installed in `addons/gut/`, configured in `.gutconfig.j
   -gexit
 ```
 
-Test files live in `tests/unit/` (9 scripts) and `tests/integration/` (1 script). Each file extends `GutTest`; test methods are prefixed `test_`.
+Test files live in `tests/unit/` and `tests/integration/`. Each file extends `GutTest`; test methods are prefixed `test_`.
 
 **GDScript gotcha in tests**: accessing elements of an untyped `Array` (like `formation.aliens[i]`) requires `var x = arr[i]` (not `:=`) to avoid parse errors. Helper functions that return scene instances should omit the return-type annotation so callers can access script-defined properties dynamically.
 
 **Group ownership**: `"alien"` group is added by `alien_formation.gd`, not `alien.gd`. Tests that instantiate aliens standalone must call `alien.add_to_group("alien")` manually.
+
+## Reimporting Assets (e.g. after editing translation CSVs)
+
+```bash
+/home/bin/godot/Godot_v4.6.1-stable_mono_linux.x86_64 --headless --editor --quit \
+  --path /home/gustavo/src/space-invaders
+```
+
+This triggers Godot's importer headlessly and regenerates all `.translation` binary files from the CSV source.
 
 ## Architecture
 
@@ -63,7 +72,7 @@ Test files live in `tests/unit/` (9 scripts) and `tests/integration/` (1 script)
 | Scene | Root | Script | Role |
 |---|---|---|---|
 | `title_screen.tscn` | Control | `title_screen.gd` | Entry point — logo + menu (New Game / Options / Exit) |
-| `options_screen.tscn` | Control | `options_screen.gd` | Key rebinding UI + CRT toggle + audio stubs; supports `overlay_mode` for use from the pause menu |
+| `options_screen.tscn` | Control | `options_screen.gd` | Key rebinding UI + CRT toggle + audio stubs + language selector; supports `overlay_mode` for use from the pause menu |
 | `main.tscn` | Node2D | `main.gd` | Game controller — owns all other nodes, handles input, score, lives, wave |
 | `player.tscn` | CharacterBody2D | `player.gd` | Player ship — movement, shooting, hit/respawn |
 | `alien.tscn` | Area2D | `alien.gd` | Single alien — type, points, 2-frame animation |
@@ -75,7 +84,7 @@ Test files live in `tests/unit/` (9 scripts) and `tests/integration/` (1 script)
 | `hud.tscn` | CanvasLayer | `hud.gd` | Score, hi-score, lives, game-over panel, pause menu (Resume / Options / Exit) |
 | `crt_effect.tscn` | — | *(shader only)* | Full-screen CRT scanline/vignette overlay; belongs to group `"crt_effect"` |
 
-`settings.gd` declares `class_name Settings` — a static class (no autoload needed) that persists key bindings and CRT preference to `user://settings.cfg`. Call `Settings.load()` before reading values; call `Settings.save()` after writing. In unit tests: call `Settings._delete_file_for_test()` then `Settings._reset_for_test()` in `before_each` to ensure a fully clean state (the reset clears in-memory state; the delete removes the persisted file so saved user customisations don't leak into default-value tests).
+`settings.gd` declares `class_name Settings` — a static class (no autoload needed) that persists preferences to `user://settings.cfg`. Stored values: key bindings, `crt_enabled`, `music_volume`, `sfx_volume`, `language`. Call `Settings.load()` before reading values; call `Settings.save()` after writing. In unit tests: call `Settings._delete_file_for_test()` then `Settings._reset_for_test()` in `before_each` to ensure a fully clean state.
 
 ### Signal Flow
 
@@ -110,7 +119,7 @@ Bullets call methods directly on what they hit (`area.kill()`, `body.hit()`, `ar
 
 ### Scene Flow
 
-`title_screen.tscn` is the `run/main_scene`. "New Game" → `main.tscn`; "Options" → `options_screen.tscn` → back to `title_screen.tscn`. After game-over the player presses F5 to restart (reloads `main.tscn`); there is no automatic return to title yet.
+`title_screen.tscn` is the `run/main_scene`. `title_screen.gd._ready()` calls `Settings.load()` and `Settings.apply_language()` to set the locale before anything is displayed. "New Game" → `main.tscn`; "Options" → `options_screen.tscn` → back to `title_screen.tscn`. After game-over the player presses F5 to restart (reloads `main.tscn`); there is no automatic return to title yet.
 
 During gameplay, pressing Escape opens the pause menu. "Options" from the pause menu does **not** switch scenes — it instantiates `options_screen.tscn` with `overlay_mode = true` as a child of the HUD `CanvasLayer`, preserving all game state. When the overlay closes it emits `closed` and is freed.
 
@@ -125,3 +134,17 @@ During gameplay, pressing Escape opens the pause menu. "Options" from the pause 
 - **Boundaries** (top/bottom walls) are `Area2D` nodes built in code by `main.gd._ready()`, layer 64, used to despawn out-of-bounds bullets.
 - **Hi-score** is persisted to `user://hi_score.cfg` via `ConfigFile`.
 - **Groups used**: `"player"`, `"alien"`, `"shield_segment"`, `"ufo"`, `"boundary"` — bullets use `is_in_group()` for hit detection.
+- **Freeing nodes from signal callbacks**: never call `node.free()` or `node.queue_free()` on a node that is currently executing a signal (e.g. an `OptionButton` whose `item_selected` is still on the call stack). Use `call_deferred("_your_method")` to defer destruction until after the signal completes.
+
+### Translation System
+
+Translations live in `assets/translations/en.csv`. The first column is `keys`; subsequent columns are locale codes (`en`, `pt_BR`, `es`, `fr`, `de`, `it`). Godot's CSV importer compiles one binary `.translation` file per locale; all are registered in `project.godot` under `[internationalization]`.
+
+To add a new locale or string:
+1. Add a column / row to `en.csv`.
+2. Update the `dest_files` list in `en.csv.import`.
+3. Run the headless import command above to regenerate the `.translation` binaries.
+4. Add the new `.translation` path to `locale/translations` in `project.godot`.
+5. Add the locale to `Settings.SUPPORTED_LOCALES` and expose it in `options_screen.gd`'s `LANGUAGE_LOCALES` / `LANGUAGE_LABELS` arrays.
+
+`Settings.apply_language()` resolves the active locale: uses the stored preference if set, otherwise falls back to the OS locale (`OS.get_locale()`), matched against `SUPPORTED_LOCALES` by exact code then by 2-letter language prefix. Falls back to `"en"` if nothing matches. The options screen calls `call_deferred("_rebuild_ui")` after applying a language change so the UI refreshes without crashing mid-signal.
