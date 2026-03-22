@@ -24,7 +24,9 @@ const LANGUAGE_LABELS: Array[String] = [
 ]
 
 var _rebind_buttons: Dictionary = {}   # action -> Button
+var _gamepad_buttons: Dictionary = {}  # action -> Button
 var _waiting_for_key: String = ""
+var _waiting_for_gamepad: String = ""
 var _in_use_timer: Timer
 var _in_use_action: String = ""
 var _ui_bg: ColorRect
@@ -50,6 +52,7 @@ func _setup_in_use_timer() -> void:
 
 func _build_ui() -> void:
 	_rebind_buttons.clear()
+	_gamepad_buttons.clear()
 
 	# Dark background
 	_ui_bg = ColorRect.new()
@@ -78,6 +81,23 @@ func _build_ui() -> void:
 	vbox.add_child(title)
 
 	_add_separator_label(vbox, tr("-- KEY BINDINGS --"))
+
+	var header_row := HBoxContainer.new()
+	var hdr_spacer := Label.new()
+	hdr_spacer.custom_minimum_size = Vector2(180, 0)
+	hdr_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var kb_hdr := Label.new()
+	kb_hdr.text = tr("KEYBOARD")
+	kb_hdr.custom_minimum_size = Vector2(160, 0)
+	kb_hdr.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var gp_hdr := Label.new()
+	gp_hdr.text = tr("GAMEPAD")
+	gp_hdr.custom_minimum_size = Vector2(160, 0)
+	gp_hdr.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header_row.add_child(hdr_spacer)
+	header_row.add_child(kb_hdr)
+	header_row.add_child(gp_hdr)
+	vbox.add_child(header_row)
 
 	for action in REBINDABLE_ACTIONS:
 		_add_rebind_row(vbox, action)
@@ -122,14 +142,21 @@ func _add_rebind_row(parent: VBoxContainer, action: String) -> void:
 	lbl.custom_minimum_size = Vector2(180.0, 0.0)
 	lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-	var btn := Button.new()
-	btn.text = _key_label(Settings.get_keycode(action))
-	btn.custom_minimum_size = Vector2(160.0, 32.0)
-	btn.pressed.connect(_on_rebind_pressed.bind(action))
-	_rebind_buttons[action] = btn
+	var kb_btn := Button.new()
+	kb_btn.text = _key_label(Settings.get_keycode(action))
+	kb_btn.custom_minimum_size = Vector2(160.0, 32.0)
+	kb_btn.pressed.connect(_on_rebind_pressed.bind(action))
+	_rebind_buttons[action] = kb_btn
+
+	var gp_btn := Button.new()
+	gp_btn.text = _gamepad_label(Settings.get_gamepad_binding(action))
+	gp_btn.custom_minimum_size = Vector2(160.0, 32.0)
+	gp_btn.pressed.connect(_on_gamepad_rebind_pressed.bind(action))
+	_gamepad_buttons[action] = gp_btn
 
 	row.add_child(lbl)
-	row.add_child(btn)
+	row.add_child(kb_btn)
+	row.add_child(gp_btn)
 	parent.add_child(row)
 
 
@@ -201,6 +228,7 @@ func _on_language_selected(index: int) -> void:
 
 func _rebuild_ui() -> void:
 	_waiting_for_key = ""
+	_waiting_for_gamepad = ""
 	_in_use_action = ""
 	if _ui_bg:
 		_ui_bg.free()
@@ -239,34 +267,59 @@ func _on_rebind_pressed(action: String) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if overlay_mode and _waiting_for_key == "" and event.is_action_pressed("pause"):
+	if overlay_mode and _waiting_for_key == "" and _waiting_for_gamepad == "" and event.is_action_pressed("pause"):
 		_on_back_pressed()
 		get_viewport().set_input_as_handled()
 		return
-	if _waiting_for_key == "":
-		return
-	if not (event is InputEventKey):
-		return
-	if not event.pressed:
-		return
-	get_viewport().set_input_as_handled()
 
-	if event.keycode == KEY_ESCAPE:
-		_cancel_rebind()
-		return
-
-	# Reject keys already bound to a different action
-	for other in REBINDABLE_ACTIONS:
-		if other != _waiting_for_key and Settings.get_keycode(other) == event.keycode:
-			_flash_in_use(_waiting_for_key)
+	# --- Keyboard rebind ---
+	if _waiting_for_key != "":
+		if not (event is InputEventKey):
 			return
+		if not event.pressed:
+			return
+		get_viewport().set_input_as_handled()
+		if event.keycode == KEY_ESCAPE:
+			_cancel_rebind()
+			return
+		for other in REBINDABLE_ACTIONS:
+			if other != _waiting_for_key and Settings.get_keycode(other) == event.keycode:
+				_flash_in_use(_waiting_for_key)
+				return
+		var completed := _waiting_for_key
+		_waiting_for_key = ""
+		Settings.set_keycode(completed, event.keycode)
+		_rebind_buttons[completed].text = _key_label(event.keycode)
+		Settings.save()
+		_sync_action_input_map(completed)
+		return
 
-	var completed := _waiting_for_key
-	_waiting_for_key = ""
-	Settings.set_keycode(completed, event.keycode)
-	_rebind_buttons[completed].text = _key_label(event.keycode)
-	Settings.save()
-	_apply_to_input_map(completed, event.keycode)
+	# --- Gamepad rebind ---
+	if _waiting_for_gamepad != "":
+		if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+			get_viewport().set_input_as_handled()
+			_cancel_gamepad_rebind()
+			return
+		if event is InputEventJoypadButton and event.pressed:
+			get_viewport().set_input_as_handled()
+			var binding := {"type": "button", "button": int(event.button_index)}
+			var completed := _waiting_for_gamepad
+			_waiting_for_gamepad = ""
+			Settings.set_gamepad_binding(completed, binding)
+			_gamepad_buttons[completed].text = _gamepad_label(binding)
+			Settings.save()
+			_sync_action_input_map(completed)
+			return
+		if event is InputEventJoypadMotion and absf(event.axis_value) > 0.5:
+			get_viewport().set_input_as_handled()
+			var binding := {"type": "axis", "axis": int(event.axis), "axis_value": signf(event.axis_value)}
+			var completed := _waiting_for_gamepad
+			_waiting_for_gamepad = ""
+			Settings.set_gamepad_binding(completed, binding)
+			_gamepad_buttons[completed].text = _gamepad_label(binding)
+			Settings.save()
+			_sync_action_input_map(completed)
+			return
 
 
 func _cancel_rebind() -> void:
@@ -306,13 +359,67 @@ func _on_back_pressed() -> void:
 		get_tree().change_scene_to_file("res://scenes/title_screen.tscn")
 
 
-func _apply_to_input_map(action: String, keycode: Key) -> void:
+func _sync_action_input_map(action: String) -> void:
 	if not InputMap.has_action(action):
 		InputMap.add_action(action)
 	InputMap.action_erase_events(action)
 	var ev := InputEventKey.new()
-	ev.keycode = keycode
+	ev.keycode = Settings.get_keycode(action)
 	InputMap.action_add_event(action, ev)
+	var binding = Settings.get_gamepad_binding(action)
+	if binding.is_empty():
+		return
+	if binding["type"] == "button":
+		var jev := InputEventJoypadButton.new()
+		jev.button_index = binding["button"] as JoyButton
+		InputMap.action_add_event(action, jev)
+	else:
+		var jev := InputEventJoypadMotion.new()
+		jev.axis = binding["axis"] as JoyAxis
+		jev.axis_value = binding["axis_value"]
+		InputMap.action_add_event(action, jev)
+
+
+func _on_gamepad_rebind_pressed(action: String) -> void:
+	if _waiting_for_key != "" or _waiting_for_gamepad != "":
+		return
+	_waiting_for_gamepad = action
+	_gamepad_buttons[action].text = tr("Press a button...")
+	_gamepad_buttons[action].release_focus()
+
+
+func _cancel_gamepad_rebind() -> void:
+	var action := _waiting_for_gamepad
+	_waiting_for_gamepad = ""
+	_gamepad_buttons[action].text = _gamepad_label(Settings.get_gamepad_binding(action))
+
+
+func _gamepad_label(binding: Dictionary) -> String:
+	if binding.is_empty():
+		return "-"
+	if binding["type"] == "button":
+		match int(binding["button"]):
+			JOY_BUTTON_A:              return "A"
+			JOY_BUTTON_B:              return "B"
+			JOY_BUTTON_X:              return "X"
+			JOY_BUTTON_Y:              return "Y"
+			JOY_BUTTON_START:          return "Start"
+			JOY_BUTTON_BACK:           return "Back"
+			JOY_BUTTON_LEFT_SHOULDER:  return "LB"
+			JOY_BUTTON_RIGHT_SHOULDER: return "RB"
+			JOY_BUTTON_DPAD_LEFT:      return "D-pad \u2190"
+			JOY_BUTTON_DPAD_RIGHT:     return "D-pad \u2192"
+			JOY_BUTTON_DPAD_UP:        return "D-pad \u2191"
+			JOY_BUTTON_DPAD_DOWN:      return "D-pad \u2193"
+			_:                         return "Btn %d" % int(binding["button"])
+	else:
+		var pos: bool = binding["axis_value"] > 0
+		match int(binding["axis"]):
+			JOY_AXIS_LEFT_X:  return "L-stick %s" % ("\u2192" if pos else "\u2190")
+			JOY_AXIS_LEFT_Y:  return "L-stick %s" % ("\u2193" if pos else "\u2191")
+			JOY_AXIS_RIGHT_X: return "R-stick %s" % ("\u2192" if pos else "\u2190")
+			JOY_AXIS_RIGHT_Y: return "R-stick %s" % ("\u2193" if pos else "\u2191")
+			_:                return "Axis %d%s" % [int(binding["axis"]), "+" if pos else "-"]
 
 
 func _key_label(keycode: Key) -> String:

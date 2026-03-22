@@ -72,7 +72,7 @@ This triggers Godot's importer headlessly and regenerates all `.translation` bin
 | Scene | Root | Script | Role |
 |---|---|---|---|
 | `title_screen.tscn` | Control | `title_screen.gd` | Entry point — logo + menu (New Game / Options / Exit) |
-| `options_screen.tscn` | Control | `options_screen.gd` | Key rebinding UI + CRT toggle + audio stubs + language selector; supports `overlay_mode` for use from the pause menu |
+| `options_screen.tscn` | Control | `options_screen.gd` | Key rebinding UI (keyboard + gamepad columns) + CRT toggle + audio stubs + language selector; supports `overlay_mode` for use from the pause menu |
 | `main.tscn` | Node2D | `main.gd` | Game controller — owns all other nodes, handles input, score, lives, wave |
 | `player.tscn` | CharacterBody2D | `player.gd` | Player ship — movement, shooting, hit/respawn |
 | `alien.tscn` | Area2D | `alien.gd` | Single alien — type, points, 2-frame animation |
@@ -84,7 +84,7 @@ This triggers Godot's importer headlessly and regenerates all `.translation` bin
 | `hud.tscn` | CanvasLayer | `hud.gd` | Score, hi-score, lives, game-over panel, pause menu (Resume / Options / Exit) |
 | `crt_effect.tscn` | — | *(shader only)* | Full-screen CRT scanline/vignette overlay; belongs to group `"crt_effect"` |
 
-`settings.gd` declares `class_name Settings` — a static class (no autoload needed) that persists preferences to `user://settings.cfg`. Stored values: key bindings, `crt_enabled`, `music_volume`, `sfx_volume`, `language`. Call `Settings.load()` before reading values; call `Settings.save()` after writing. In unit tests: call `Settings._delete_file_for_test()` then `Settings._reset_for_test()` in `before_each` to ensure a fully clean state.
+`settings.gd` declares `class_name Settings` — a static class (no autoload needed) that persists preferences to `user://settings.cfg`. Stored values: key bindings (`[keybindings]`), gamepad bindings (`[gamepad_bindings]`), `crt_enabled`, `music_volume`, `sfx_volume`, `language`. Gamepad bindings are stored as Dictionaries with `{"type": "button", "button": int}` or `{"type": "axis", "axis": int, "axis_value": float}`. Call `Settings.load()` before reading values; call `Settings.save()` after writing. In unit tests: call `Settings._delete_file_for_test()` then `Settings._reset_for_test()` in `before_each` to ensure a fully clean state.
 
 ### Signal Flow
 
@@ -128,7 +128,7 @@ During gameplay, pressing Escape opens the pause menu. "Options" from the pause 
 - **Visuals**: All use `Polygon2D` — no external textures yet. Sprites in `assets/sprites/` are planned placeholders.
 - **Font**: `assets/fonts/monogram-extended.ttf` is the project-wide font, applied via `assets/theme/default_theme.tres` (registered in `project.godot` under `[gui] theme/custom`).
 - **Background color**: viewport clear color is `#161616` (set in `project.godot` as `environment/defaults/default_clear_color`). The options screen `ColorRect` background matches this color.
-- **Input actions** are registered at runtime in `main.gd._setup_input_actions()` by reading from `Settings`: `move_left`, `move_right`, `shoot`, `restart`, `pause`. Defaults: ←, →, Space, F5, Escape. Keys are user-rebindable via the Options screen.
+- **Input actions** are registered at runtime in two passes: `main.gd._setup_input_actions()` maps keyboard keys from `Settings`, then `_setup_joypad_actions()` maps gamepad bindings from `Settings.DEFAULT_GAMEPAD_BINDINGS` / `Settings.get_gamepad_binding()`. Both keyboard and gamepad bindings are user-rebindable via the Options screen. `options_screen.gd._sync_action_input_map()` re-applies both bindings together whenever either changes, preventing stale events.
 - **Pause**: `get_tree().paused = true` freezes all `PROCESS_MODE_PAUSABLE` nodes. `main.gd` and `hud.tscn` root use `PROCESS_MODE_ALWAYS` so input and HUD remain live while paused. The pause menu (Resume / Options / Exit to Desktop) is built into `hud.tscn`'s `PausePanel`. Options opened from the pause menu inherits `PROCESS_MODE_ALWAYS` via the HUD CanvasLayer parent.
 - **`alien.set_type()`** must be called **before** `add_child()` — colors are applied in `_ready()`.
 - **`player.bullets_container`** is injected by `main.gd._ready()` (parent `_ready` runs after children in Godot).

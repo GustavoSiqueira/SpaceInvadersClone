@@ -190,3 +190,98 @@ func test_set_language_empty_restores_system_default() -> void:
 	Settings.set_language("es")
 	Settings.set_language("")
 	assert_eq(Settings.get_language(), "")
+
+
+# --- Gamepad binding defaults ---
+
+func test_default_gamepad_move_left() -> void:
+	Settings.load()
+	var b = Settings.get_gamepad_binding("move_left")
+	assert_eq(b["type"], "button")
+	assert_eq(int(b["button"]), int(JOY_BUTTON_DPAD_LEFT))
+
+
+func test_default_gamepad_move_right() -> void:
+	Settings.load()
+	var b = Settings.get_gamepad_binding("move_right")
+	assert_eq(b["type"], "button")
+	assert_eq(int(b["button"]), int(JOY_BUTTON_DPAD_RIGHT))
+
+
+func test_default_gamepad_shoot() -> void:
+	Settings.load()
+	var b = Settings.get_gamepad_binding("shoot")
+	assert_eq(b["type"], "button")
+	assert_eq(int(b["button"]), int(JOY_BUTTON_A))
+
+
+func test_default_gamepad_pause() -> void:
+	Settings.load()
+	var b = Settings.get_gamepad_binding("pause")
+	assert_eq(b["type"], "button")
+	assert_eq(int(b["button"]), int(JOY_BUTTON_START))
+
+
+# --- Gamepad binding mutation ---
+
+func test_set_gamepad_binding_button_updates_value() -> void:
+	Settings.load()
+	Settings.set_gamepad_binding("shoot", {"type": "button", "button": int(JOY_BUTTON_B)})
+	var b = Settings.get_gamepad_binding("shoot")
+	assert_eq(b["type"], "button")
+	assert_eq(int(b["button"]), int(JOY_BUTTON_B))
+
+
+func test_set_gamepad_binding_axis() -> void:
+	Settings.load()
+	Settings.set_gamepad_binding("move_left", {"type": "axis", "axis": int(JOY_AXIS_LEFT_X), "axis_value": -1.0})
+	var b = Settings.get_gamepad_binding("move_left")
+	assert_eq(b["type"], "axis")
+	assert_eq(int(b["axis"]), int(JOY_AXIS_LEFT_X))
+	assert_almost_eq(float(b["axis_value"]), -1.0, 0.001)
+
+
+func test_set_gamepad_binding_does_not_affect_other_actions() -> void:
+	Settings.load()
+	Settings.set_gamepad_binding("shoot", {"type": "button", "button": int(JOY_BUTTON_B)})
+	var b = Settings.get_gamepad_binding("move_left")
+	assert_eq(int(b["button"]), int(JOY_BUTTON_DPAD_LEFT))
+
+
+func test_get_gamepad_binding_returns_duplicate() -> void:
+	Settings.load()
+	var b1 = Settings.get_gamepad_binding("shoot")
+	b1["type"] = "tampered"
+	var b2 = Settings.get_gamepad_binding("shoot")
+	assert_eq(b2["type"], "button")
+
+
+# --- Gamepad save / reload round-trip ---
+
+func test_save_and_reload_gamepad_button_binding() -> void:
+	Settings.load()
+	Settings.set_gamepad_binding("shoot", {"type": "button", "button": int(JOY_BUTTON_X)})
+	Settings.save()
+	Settings._reset_for_test()
+	Settings.load()
+	var b = Settings.get_gamepad_binding("shoot")
+	assert_eq(b["type"], "button")
+	assert_eq(int(b["button"]), int(JOY_BUTTON_X))
+	# Restore default
+	Settings.set_gamepad_binding("shoot", {"type": "button", "button": int(JOY_BUTTON_A)})
+	Settings.save()
+
+
+func test_save_and_reload_gamepad_axis_binding() -> void:
+	Settings.load()
+	Settings.set_gamepad_binding("move_right", {"type": "axis", "axis": int(JOY_AXIS_LEFT_X), "axis_value": 1.0})
+	Settings.save()
+	Settings._reset_for_test()
+	Settings.load()
+	var b = Settings.get_gamepad_binding("move_right")
+	assert_eq(b["type"], "axis")
+	assert_eq(int(b["axis"]), int(JOY_AXIS_LEFT_X))
+	assert_almost_eq(float(b["axis_value"]), 1.0, 0.001)
+	# Restore default
+	Settings.set_gamepad_binding("move_right", {"type": "button", "button": int(JOY_BUTTON_DPAD_RIGHT)})
+	Settings.save()

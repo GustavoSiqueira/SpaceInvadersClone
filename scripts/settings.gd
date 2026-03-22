@@ -1,10 +1,19 @@
 class_name Settings
 
-const _PATH := "user://settings.cfg"
-const _SEC_KEYS  := "keybindings"
-const _SEC_PREFS := "preferences"
+const _PATH      := "user://settings.cfg"
+const _SEC_KEYS   := "keybindings"
+const _SEC_PREFS  := "preferences"
+const _SEC_GAMEPAD := "gamepad_bindings"
 
 const SUPPORTED_LOCALES: Array[String] = ["en", "pt_BR", "es", "fr", "de", "it"]
+
+const DEFAULT_GAMEPAD_BINDINGS: Dictionary = {
+	"move_left":  {"type": "button", "button": JOY_BUTTON_DPAD_LEFT},
+	"move_right": {"type": "button", "button": JOY_BUTTON_DPAD_RIGHT},
+	"shoot":      {"type": "button", "button": JOY_BUTTON_A},
+	"pause":      {"type": "button", "button": JOY_BUTTON_START},
+	"restart":    {"type": "button", "button": JOY_BUTTON_START},
+}
 
 const DEFAULT_KEYS: Dictionary = {
 	"move_left":  KEY_LEFT,
@@ -33,11 +42,15 @@ static func load() -> void:
 		"sfx_volume":   1.0,
 		"language":     "",
 	}
+	for action in DEFAULT_GAMEPAD_BINDINGS.keys():
+		_data["gamepad_" + action] = DEFAULT_GAMEPAD_BINDINGS[action].duplicate()
 	var cfg := ConfigFile.new()
 	if cfg.load(_PATH) != OK:
 		return
 	for action in DEFAULT_KEYS.keys():
 		_data[action] = cfg.get_value(_SEC_KEYS, action, _data[action])
+	for action in DEFAULT_GAMEPAD_BINDINGS.keys():
+		_data["gamepad_" + action] = cfg.get_value(_SEC_GAMEPAD, action, _data["gamepad_" + action])
 	_data["crt_enabled"]  = cfg.get_value(_SEC_PREFS, "crt_enabled",  true)
 	_data["music_volume"] = cfg.get_value(_SEC_PREFS, "music_volume", 1.0)
 	_data["sfx_volume"]   = cfg.get_value(_SEC_PREFS, "sfx_volume",   1.0)
@@ -48,6 +61,8 @@ static func save() -> void:
 	var cfg := ConfigFile.new()
 	for action in DEFAULT_KEYS.keys():
 		cfg.set_value(_SEC_KEYS, action, _data[action])
+	for action in DEFAULT_GAMEPAD_BINDINGS.keys():
+		cfg.set_value(_SEC_GAMEPAD, action, _data.get("gamepad_" + action, DEFAULT_GAMEPAD_BINDINGS[action]))
 	cfg.set_value(_SEC_PREFS, "crt_enabled",  _data["crt_enabled"])
 	cfg.set_value(_SEC_PREFS, "music_volume", _data["music_volume"])
 	cfg.set_value(_SEC_PREFS, "sfx_volume",   _data["sfx_volume"])
@@ -61,6 +76,14 @@ static func get_keycode(action: String) -> Key:
 
 static func set_keycode(action: String, keycode: Key) -> void:
 	_data[action] = keycode
+
+
+static func get_gamepad_binding(action: String) -> Dictionary:
+	return _data.get("gamepad_" + action, DEFAULT_GAMEPAD_BINDINGS.get(action, {})).duplicate()
+
+
+static func set_gamepad_binding(action: String, binding: Dictionary) -> void:
+	_data["gamepad_" + action] = binding
 
 
 static func get_crt_enabled() -> bool:

@@ -25,6 +25,9 @@ Move Right,Move Right,Mover Direita,Mover Derecha,Aller à Droite,Rechts Bewegen
 Shoot,Shoot,Atirar,Disparar,Tirer,Schießen,Spara
 Pause,Pause,Pausar,Pausar,Pause,Pausieren,Pausa
 Restart,Restart,Reiniciar,Reiniciar,Redémarrer,Neustart,Ricomincia
+KEYBOARD,KEYBOARD,TECLADO,TECLADO,CLAVIER,TASTATUR,TASTIERA
+GAMEPAD,GAMEPAD,CONTROLE,CONTROL,MANETTE,GAMEPAD,GAMEPAD
+Press a button...,Press a button...,Pressione um botão...,Presiona un botón...,Appuyez sur un bouton...,Knopf drücken...,Premi un tasto...
 -- LANGUAGE --,-- LANGUAGE --,-- IDIOMA --,-- IDIOMA --,-- LANGUE --,-- SPRACHE --,-- LINGUA --
 Language,Language,Idioma,Idioma,Langue,Sprache,Lingua
 System Default,System Default,Padrão do Sistema,Idioma del Sistema,Langue du Système,Systemsprache,Lingua di Sistema

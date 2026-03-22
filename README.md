@@ -69,9 +69,9 @@ Tests use **GUT 9.6.0** (already installed in `addons/gut/`).
 
 | Suite | Scripts | Tests |
 |---|---|---|
-| `tests/unit/` | 9 | 118 |
+| `tests/unit/` | 10 | 146 |
 | `tests/integration/` | 1 | 7 |
-| **Total** | **10** | **125** |
+| **Total** | **11** | **153** |
 
 ---
 
@@ -355,12 +355,29 @@ Accessible from the title screen **Options** button or from the in-game **Pause 
 
 ### Key Bindings
 
-The five game actions can be rebound to any key:
+The key bindings section shows a two-column table — **KEYBOARD** and **GAMEPAD** — for each of the five actions. Both columns are independently rebindable.
 
+**Keyboard column:**
 1. Click the button next to the action you want to rebind — it shows **"Press a key..."**
 2. Press the desired key. The binding is saved immediately.
 3. Press **Escape** to cancel without changing anything.
 4. If the chosen key is already used by another action, **"In use!"** is shown briefly and the old binding is kept.
+
+**Gamepad column:**
+1. Click the gamepad button for the action — it shows **"Press a button..."**
+2. Press any gamepad button or move an axis past 50% — the binding is saved immediately.
+3. Press **Escape** to cancel without changing anything.
+4. Gamepad bindings do not conflict-check (the same button may be assigned to multiple actions, which is intentional for context-dependent inputs like Start = Pause during gameplay and Restart on game over).
+
+Default gamepad bindings:
+
+| Action | Default |
+|---|---|
+| Move Left | D-pad ← |
+| Move Right | D-pad → |
+| Shoot | A |
+| Pause | Start |
+| Restart | Start |
 
 ### CRT Effect Toggle
 
@@ -419,4 +436,3 @@ See `docs/plan.md` for the full tracked checklist. High-level items still open:
 - Sprite art (all visuals are `Polygon2D` placeholder shapes)
 - Sound effects and music
 - Explosion animations
-- Joystick support

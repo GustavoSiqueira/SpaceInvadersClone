@@ -44,14 +44,15 @@ func _setup_input_actions() -> void:
 		_map_key_action(action, Settings.get_keycode(action))
 
 
-func _add_joypad_defaults() -> void:
-	_map_joypad_axis("move_left",  JOY_AXIS_LEFT_X, -1.0)
-	_map_joypad_button("move_left",  JOY_BUTTON_DPAD_LEFT)
-	_map_joypad_axis("move_right", JOY_AXIS_LEFT_X,  1.0)
-	_map_joypad_button("move_right", JOY_BUTTON_DPAD_RIGHT)
-	_map_joypad_button("shoot",   JOY_BUTTON_A)
-	_map_joypad_button("pause",   JOY_BUTTON_START)
-	_map_joypad_button("restart", JOY_BUTTON_START)
+func _setup_joypad_actions() -> void:
+	for action in Settings.DEFAULT_GAMEPAD_BINDINGS.keys():
+		var binding = Settings.get_gamepad_binding(action)
+		if binding.is_empty():
+			continue
+		if binding["type"] == "button":
+			_map_joypad_button(action, binding["button"] as JoyButton)
+		else:
+			_map_joypad_axis(action, binding["axis"] as JoyAxis, binding["axis_value"])
 
 
 func _map_joypad_axis(action: StringName, axis: JoyAxis, value: float) -> void:
@@ -81,7 +82,7 @@ func _map_key_action(action: StringName, keycode: Key) -> void:
 
 func _ready() -> void:
 	_setup_input_actions()
-	_add_joypad_defaults()
+	_setup_joypad_actions()
 	_load_hi_score()
 	hud.update_score(score, hi_score)
 	player.bullets_container = player_bullets
