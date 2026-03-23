@@ -93,7 +93,7 @@ func test_game_over_panel_has_play_again_button() -> void:
 	var hud = _make_hud()
 	var btn = hud.get_node("GameOverPanel/VBoxContainer/PlayAgainButton")
 	assert_not_null(btn)
-	assert_eq(btn.text, "Play Again  [F5]")
+	assert_eq(btn.text, "Play Again")
 
 
 func test_game_over_panel_has_title_button() -> void:

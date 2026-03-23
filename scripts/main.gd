@@ -40,7 +40,7 @@ func _save_hi_score() -> void:
 
 func _setup_input_actions() -> void:
 	Settings.load()
-	for action in ["move_left", "move_right", "shoot", "restart", "pause"]:
+	for action in ["move_left", "move_right", "shoot", "pause"]:
 		_map_key_action(action, Settings.get_keycode(action))
 
 
@@ -216,11 +216,6 @@ func _game_over() -> void:
 	if formation and is_instance_valid(formation):
 		formation.stop()
 	hud.show_game_over()
-
-
-func _input(event: InputEvent) -> void:
-	if not game_active and event.is_action_pressed("restart"):
-		_restart_game()
 
 
 func _toggle_pause() -> void:

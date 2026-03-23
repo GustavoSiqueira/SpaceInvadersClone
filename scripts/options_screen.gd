@@ -5,7 +5,7 @@ signal closed
 var overlay_mode: bool = false
 
 const REBINDABLE_ACTIONS: Array[String] = [
-	"move_left", "move_right", "shoot", "pause", "restart"
+	"move_left", "move_right", "shoot", "pause"
 ]
 
 const ACTION_LABELS: Dictionary = {
@@ -13,7 +13,6 @@ const ACTION_LABELS: Dictionary = {
 	"move_right": "Move Right",
 	"shoot":      "Shoot",
 	"pause":      "Pause",
-	"restart":    "Restart",
 }
 
 const CRT_SCENE := preload("res://scenes/crt_effect.tscn")

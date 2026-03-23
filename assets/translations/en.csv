@@ -3,7 +3,7 @@ SCORE: %d,"SCORE: %d","PONTOS: %d","PUNTOS: %d","SCORE: %d","PUNKTE: %d","PUNTEG
 HI: %d,"HI: %d","RECORDE: %d","RÉCORD: %d","RECORD: %d","REKORD: %d","RECORD: %d"
 LIVES: %d,"LIVES: %d","VIDAS: %d","VIDAS: %d","VIES: %d","LEBEN: %d","VITE: %d"
 GAME OVER,GAME OVER,FIM DE JOGO,FIN DEL JUEGO,PARTIE TERMINÉE,SPIEL VORBEI,FINE DEL GIOCO
-Play Again  [F5],"Play Again  [F5]","Jogar Novamente  [F5]","Jugar de Nuevo  [F5]","Rejouer  [F5]","Nochmal Spielen  [F5]","Gioca Ancora  [F5]"
+Play Again,Play Again,Jogar Novamente,Jugar de Nuevo,Rejouer,Nochmal Spielen,Gioca Ancora
 Return to Title,Return to Title,Voltar ao Menu,Volver al Menú,Retour au Menu,Zum Hauptmenü,Torna al Menu
 PAUSED,PAUSED,PAUSADO,PAUSADO,PAUSE,PAUSIERT,IN PAUSA
 Resume,Resume,Continuar,Continuar,Reprendre,Weiterspielen,Riprendi
@@ -24,7 +24,6 @@ Move Left,Move Left,Mover Esquerda,Mover Izquierda,Aller à Gauche,Links Bewegen
 Move Right,Move Right,Mover Direita,Mover Derecha,Aller à Droite,Rechts Bewegen,Muovi a Destra
 Shoot,Shoot,Atirar,Disparar,Tirer,Schießen,Spara
 Pause,Pause,Pausar,Pausar,Pause,Pausieren,Pausa
-Restart,Restart,Reiniciar,Reiniciar,Redémarrer,Neustart,Ricomincia
 KEYBOARD,KEYBOARD,TECLADO,TECLADO,CLAVIER,TASTATUR,TASTIERA
 GAMEPAD,GAMEPAD,CONTROLE,CONTROL,MANETTE,GAMEPAD,GAMEPAD
 Press a button...,Press a button...,Pressione um botão...,Presiona un botón...,Appuyez sur un bouton...,Knopf drücken...,Premi un tasto...

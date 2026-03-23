@@ -28,11 +28,6 @@ func test_default_pause() -> void:
 	assert_eq(Settings.get_keycode("pause"), KEY_ESCAPE)
 
 
-func test_default_restart() -> void:
-	Settings.load()
-	assert_eq(Settings.get_keycode("restart"), KEY_F5)
-
-
 func test_default_crt_enabled_is_true() -> void:
 	Settings.load()
 	assert_true(Settings.get_crt_enabled())
@@ -52,7 +47,6 @@ func test_set_keycode_does_not_affect_other_actions() -> void:
 	assert_eq(Settings.get_keycode("move_left"), KEY_LEFT)
 	assert_eq(Settings.get_keycode("move_right"), KEY_RIGHT)
 	assert_eq(Settings.get_keycode("pause"), KEY_ESCAPE)
-	assert_eq(Settings.get_keycode("restart"), KEY_F5)
 
 
 # --- CRT mutation ---

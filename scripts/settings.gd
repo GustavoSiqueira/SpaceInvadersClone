@@ -12,14 +12,12 @@ const DEFAULT_GAMEPAD_BINDINGS: Dictionary = {
 	"move_right": {"type": "button", "button": JOY_BUTTON_DPAD_RIGHT},
 	"shoot":      {"type": "button", "button": JOY_BUTTON_A},
 	"pause":      {"type": "button", "button": JOY_BUTTON_START},
-	"restart":    {"type": "button", "button": JOY_BUTTON_START},
 }
 
 const DEFAULT_KEYS: Dictionary = {
 	"move_left":  KEY_LEFT,
 	"move_right": KEY_RIGHT,
 	"shoot":      KEY_SPACE,
-	"restart":    KEY_F5,
 	"pause":      KEY_ESCAPE,
 }
 
@@ -35,7 +33,6 @@ static func load() -> void:
 		"move_left":    DEFAULT_KEYS["move_left"],
 		"move_right":   DEFAULT_KEYS["move_right"],
 		"shoot":        DEFAULT_KEYS["shoot"],
-		"restart":      DEFAULT_KEYS["restart"],
 		"pause":        DEFAULT_KEYS["pause"],
 		"crt_enabled":  true,
 		"music_volume": 1.0,
