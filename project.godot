@@ -31,6 +31,10 @@ project/assembly_name="space-invaders"
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
+[gui]
+
+theme/custom="res://assets/theme/default_theme.tres"
+
 [internationalization]
 
 locale/translations=PackedStringArray("res://assets/translations/en.de.translation", "res://assets/translations/en.en.translation", "res://assets/translations/en.es.translation", "res://assets/translations/en.fr.translation", "res://assets/translations/en.it.translation", "res://assets/translations/en.pt_BR.translation")
@@ -39,10 +43,6 @@ locale/translations=PackedStringArray("res://assets/translations/en.de.translati
 
 2d/physics_engine="GodotPhysics2D"
 3d/physics_engine="Jolt Physics"
-
-[gui]
-
-theme/custom="res://assets/theme/default_theme.tres"
 
 [rendering]
 
