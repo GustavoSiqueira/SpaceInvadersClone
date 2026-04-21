@@ -1,9 +1,10 @@
-[gd_scene format=3 uid="uid://pb001"]
+[gd_scene load_steps=3 format=3 uid="uid://pb001"]
 
 [ext_resource type="Script" uid="uid://dewap2m3ddct2" path="res://scripts/player_bullet.gd" id="1_pb"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player_bullet.png" id="2_pb_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pb"]
-size = Vector2(4, 12)
+size = Vector2(16, 56)
 
 [node name="PlayerBullet" type="Area2D" unique_id=1867743625]
 collision_layer = 4
@@ -13,6 +14,5 @@ script = ExtResource("1_pb")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1768342625]
 shape = SubResource("RectangleShape2D_pb")
 
-[node name="Sprite" type="Polygon2D" parent="." unique_id=1266779399]
-color = Color(1, 1, 0, 1)
-polygon = PackedVector2Array(-2, -6, 2, -6, 2, 6, -2, 6)
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1266779399]
+texture = ExtResource("2_pb_tex")

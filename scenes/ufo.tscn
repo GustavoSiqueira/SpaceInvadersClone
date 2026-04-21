@@ -1,9 +1,10 @@
-[gd_scene format=3 uid="uid://ufo001"]
+[gd_scene load_steps=3 format=3 uid="uid://ufo001"]
 
 [ext_resource type="Script" path="res://scripts/ufo.gd" id="1_ufo"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ufo.png" id="2_ufo_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ufo"]
-size = Vector2(40, 16)
+size = Vector2(72, 32)
 
 [node name="UFO" type="Area2D"]
 collision_layer = 32
@@ -15,6 +16,5 @@ script = ExtResource("1_ufo")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ufo")
 
-[node name="Sprite" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-20, 0, -10, -8, 10, -8, 20, 0, 10, 8, -10, 8)
-color = Color(1, 0, 0, 1)
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_ufo_tex")

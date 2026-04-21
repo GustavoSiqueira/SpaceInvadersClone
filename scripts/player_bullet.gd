@@ -1,6 +1,6 @@
 extends Area2D
 
-const SPEED = 400.0
+const SPEED = 800.0
 
 
 func _ready() -> void:

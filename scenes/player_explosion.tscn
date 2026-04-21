@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://playerexpl001"]
+
+[ext_resource type="Script" path="res://scripts/explosion.gd" id="1_pexpl"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player_explosion.png" id="2_pexpl_tex"]
+
+[node name="PlayerExplosion" type="Sprite2D"]
+texture = ExtResource("2_pexpl_tex")
+hframes = 2
+frame = 0
+script = ExtResource("1_pexpl")
+frame_duration = 0.15

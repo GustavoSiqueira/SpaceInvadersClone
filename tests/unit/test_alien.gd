@@ -75,6 +75,10 @@ func test_kill_is_idempotent() -> void:
 func test_kill_disables_collision() -> void:
 	var alien := _make_alien(0)
 	alien.kill()
+	# collision_layer/mask are set via set_deferred in alien.kill() to avoid
+	# physics-flush errors when kill() runs inside an area_entered callback.
+	# In tests we have to wait one frame for the deferred queue to flush.
+	await get_tree().process_frame
 	assert_eq(alien.collision_layer, 0)
 	assert_eq(alien.collision_mask, 0)
 

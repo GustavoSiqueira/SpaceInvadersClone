@@ -42,17 +42,17 @@
 
 ## Assets
 
-### Sprites (placeholder — replace with pixel art)
-- [ ] `assets/sprites/player_ship.png`
-- [ ] `assets/sprites/alien_a.png` (top row, 2 frames)
-- [ ] `assets/sprites/alien_b.png` (mid row, 2 frames)
-- [ ] `assets/sprites/alien_c.png` (bottom row, 2 frames)
-- [ ] `assets/sprites/ufo.png`
-- [ ] `assets/sprites/player_bullet.png`
-- [ ] `assets/sprites/enemy_bullet.png`
-- [ ] `assets/sprites/shield_block.png`
-- [ ] `assets/sprites/explosion.png`
-- [ ] `assets/sprites/player_explosion.png`
+### Sprites — imported from Google Stitch (16-bit pixel art)
+- [x] `assets/sprites/player_ship.png`
+- [x] `assets/sprites/alien_a.png` (top row, 2 frames)
+- [x] `assets/sprites/alien_b.png` (mid row, 2 frames)
+- [x] `assets/sprites/alien_c.png` (bottom row, 2 frames)
+- [x] `assets/sprites/ufo.png`
+- [x] `assets/sprites/player_bullet.png`
+- [x] `assets/sprites/enemy_bullet.png`
+- [x] `assets/sprites/shield_block.png`
+- [x] `assets/sprites/explosion.png` (3 frames)
+- [x] `assets/sprites/player_explosion.png` (2 frames)
 
 ### Audio
 - [ ] `assets/audio/sfx_shoot.wav`
@@ -86,11 +86,11 @@
 - [x] Wave resets when all aliens cleared (speed/difficulty increases)
 
 ### Polish / Nice-to-have
-- [ ] Sprite art (replace Polygon2D placeholders)
+- [x] Sprite art (replace Polygon2D placeholders)
 - [ ] Sound effects (AudioStreamPlayer nodes)
 - [ ] Alien march beat (4-note cycle, tempo tracks speed)
-- [ ] Explosion animations (brief flash or sprite frames)
-- [ ] Player explosion animation
+- [x] Explosion animations (brief flash or sprite frames)
+- [x] Player explosion animation
 - [ ] UFO loop sound while on screen
 - [X] Persistent hi-score via ConfigFile
 - [x] Start/title screen

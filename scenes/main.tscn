@@ -9,7 +9,7 @@
 script = ExtResource("1_main")
 
 [node name="Player" parent="." unique_id=1560288256 instance=ExtResource("2_player")]
-position = Vector2(400, 540)
+position = Vector2(800, 1080)
 
 [node name="Shields" type="Node2D" parent="." unique_id=451830517]
 

@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Space Invaders clone built with **Godot 4.6** using **GDScript**. 2D, GL Compatibility renderer, 800×600 logical viewport. Stretch mode: `canvas_items` / aspect: `keep` (letterbox on non-4:3 screens).
+Space Invaders clone built with **Godot 4.6** using **GDScript**. 2D, GL Compatibility renderer, 1600×1200 logical viewport. Stretch mode: `canvas_items` / aspect: `keep` (letterbox on non-4:3 screens).
 
 ## Godot Executable
 
@@ -83,6 +83,8 @@ This triggers Godot's importer headlessly and regenerates all `.translation` bin
 | `ufo.tscn` | Area2D | `ufo.gd` | Bonus UFO — flies across top, awards random points |
 | `hud.tscn` | CanvasLayer | `hud.gd` | Score, hi-score, lives, game-over panel, pause menu (Resume / Options / Exit) |
 | `crt_effect.tscn` | — | *(shader only)* | Full-screen CRT scanline/vignette overlay; belongs to group `"crt_effect"` |
+| `explosion.tscn` | Sprite2D | `explosion.gd` | 3-frame alien/UFO death burst — spawned by `alien.kill()` and `ufo.hit()` |
+| `player_explosion.tscn` | Sprite2D | `explosion.gd` | 2-frame player-ship death burst — spawned by `player.hit()` |
 
 `settings.gd` declares `class_name Settings` — a static class (no autoload needed) that persists preferences to `user://settings.cfg`. Stored values: key bindings (`[keybindings]`), gamepad bindings (`[gamepad_bindings]`), `crt_enabled`, `music_volume`, `sfx_volume`, `language`. Gamepad bindings are stored as Dictionaries with `{"type": "button", "button": int}` or `{"type": "axis", "axis": int, "axis_value": float}`. Call `Settings.load()` before reading values; call `Settings.save()` after writing. In unit tests: call `Settings._delete_file_for_test()` then `Settings._reset_for_test()` in `before_each` to ensure a fully clean state.
 
@@ -125,17 +127,18 @@ During gameplay, pressing Escape opens the pause menu. "Options" from the pause 
 
 ### Key Implementation Details
 
-- **Visuals**: All use `Polygon2D` — no external textures yet. Sprites in `assets/sprites/` are planned placeholders.
+- **Visuals**: All entities use `Sprite2D` with textures from `assets/sprites/`. Sprites are 16-bit pixel art imported from Google Stitch (palette: red/green/yellow aliens, cyan/blue player, purple UFO, cyan shields). Project-wide `rendering/textures/canvas_textures/default_texture_filter=0` (Nearest) keeps pixel art crisp. See `docs/Assets List.md` for the full sprite inventory.
 - **Font**: `assets/fonts/monogram-extended.ttf` is the project-wide font, applied via `assets/theme/default_theme.tres` (registered in `project.godot` under `[gui] theme/custom`).
 - **Background color**: viewport clear color is `#161616` (set in `project.godot` as `environment/defaults/default_clear_color`). The options screen `ColorRect` background matches this color.
 - **Input actions** are registered at runtime in two passes: `main.gd._setup_input_actions()` maps keyboard keys from `Settings`, then `_setup_joypad_actions()` maps gamepad bindings from `Settings.DEFAULT_GAMEPAD_BINDINGS` / `Settings.get_gamepad_binding()`. Both keyboard and gamepad bindings are user-rebindable via the Options screen. `options_screen.gd._sync_action_input_map()` re-applies both bindings together whenever either changes, preventing stale events.
 - **Pause**: `get_tree().paused = true` freezes all `PROCESS_MODE_PAUSABLE` nodes. `main.gd` and `hud.tscn` root use `PROCESS_MODE_ALWAYS` so input and HUD remain live while paused. The pause menu (Resume / Options / Exit to Desktop) is built into `hud.tscn`'s `PausePanel`. Options opened from the pause menu inherits `PROCESS_MODE_ALWAYS` via the HUD CanvasLayer parent.
-- **`alien.set_type()`** must be called **before** `add_child()` — colors are applied in `_ready()`.
+- **`alien.set_type()`** must be called **before** `add_child()` — the per-type texture (`alien_a/b/c.png`) is assigned in `_ready()` from `alien.gd`'s `ALIEN_TEXTURES` preload array. Aliens use a single `Sprite2D` child with `hframes = 2`; `toggle_frame()` flips `sprite.frame` on each formation step.
 - **`player.bullets_container`** is injected by `main.gd._ready()` (parent `_ready` runs after children in Godot).
 - **Formation speed** scales with `alive_count / total` and `wave` number via `_recalc_speed()`.
 - **Boundaries** (top/bottom walls) are `Area2D` nodes built in code by `main.gd._ready()`, layer 64, used to despawn out-of-bounds bullets.
 - **Hi-score** is persisted to `user://hi_score.cfg` via `ConfigFile`.
 - **Groups used**: `"player"`, `"alien"`, `"shield_segment"`, `"ufo"`, `"boundary"` — bullets use `is_in_group()` for hit detection.
+- **Explosions**: `alien.kill()`, `ufo.hit()`, and `player.hit()` each spawn an `explosion.tscn` (or `player_explosion.tscn` for player) at the entity's `global_position`, parented to the dying entity's parent so it survives the entity's `queue_free()`. The explosion Sprite2D advances its `hframes` on a Timer and frees itself after the last frame (`scripts/explosion.gd`).
 - **Freeing nodes from signal callbacks**: never call `node.free()` or `node.queue_free()` on a node that is currently executing a signal (e.g. an `OptionButton` whose `item_selected` is still on the call stack). Use `call_deferred("_your_method")` to defer destruction until after the signal completes.
 
 ### Translation System

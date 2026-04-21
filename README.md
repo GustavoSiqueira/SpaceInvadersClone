@@ -13,9 +13,9 @@ A faithful Space Invaders clone built with Godot 4.6 and GDScript. The game feat
 | Renderer | GL Compatibility (OpenGL 3 / OpenGL ES 3) |
 | Physics | Godot Physics 2D |
 | Scene format | Godot TSCN (text-based) |
-| Window | 800 × 600 px logical viewport (letterboxed on non-4:3 screens) |
+| Window | 1600 × 1200 px logical viewport (letterboxed on non-4:3 screens) |
 
-The game uses Godot's **canvas_items** stretch mode with **keep** aspect ratio. The entire scene is rendered at 800 × 600 and scaled uniformly to the window; black bars appear on the sides of 16:9 or wider displays. The 4:3 ratio is intentional — Space Invaders was originally a fixed-display arcade game.
+The game uses Godot's **canvas_items** stretch mode with **keep** aspect ratio. The entire scene is rendered at 1600 × 1200 and scaled uniformly to the window; black bars appear on the sides of 16:9 or wider displays. The 4:3 ratio is intentional — Space Invaders was originally a fixed-display arcade game.
 
 The **GL Compatibility** renderer is the right choice here: it targets the widest range of hardware (including integrated GPUs and low-end devices) and has no overhead for features a 2D game does not use. Forward+ and Mobile renderers add GPU instancing and clustered lighting that this project does not need.
 
@@ -69,9 +69,9 @@ Tests use **GUT 9.6.0** (already installed in `addons/gut/`).
 
 | Suite | Scripts | Tests |
 |---|---|---|
-| `tests/unit/` | 10 | 146 |
+| `tests/unit/` | 10 | 145 |
 | `tests/integration/` | 1 | 7 |
-| **Total** | **11** | **153** |
+| **Total** | **11** | **152** |
 
 ---
 
@@ -105,7 +105,8 @@ space-invaders/
 │   ├── shield.gd
 │   ├── ufo.gd
 │   ├── hud.gd
-│   └── crt_effect.gd
+│   ├── crt_effect.gd
+│   └── explosion.gd         # Generic hframes advancer used by both explosion scenes
 ├── shaders/             # GLSL shader files (.gdshader)
 │   └── crt_effect.gdshader
 ├── tests/
@@ -113,8 +114,8 @@ space-invaders/
 │   └── integration/     # GUT integration tests (bullet collision scenarios)
 ├── addons/gut/          # GUT 9.6.0 test framework
 ├── assets/
-│   ├── sprites/         # PNG sprite sheets (not yet created — see below)
-│   ├── audio/           # WAV/OGG sound effects and music
+│   ├── sprites/         # PNG sprite sheets — 16-bit pixel art (see Sprite Art)
+│   ├── audio/           # WAV/OGG sound effects and music (not yet created)
 │   ├── fonts/           # TTF font files
 │   │   └── monogram-extended.ttf  # project-wide UI font
 │   └── theme/
@@ -218,56 +219,48 @@ When a bullet enters a matching object it calls a method on that object (`area.k
 
 `alien_formation.gd` owns the entire formation. Key mechanics:
 
-- **Grid**: 5 rows × 11 columns (55 aliens). Rows 0–1 → type 0 (cyan, 30 pts), rows 2–3 → type 1 (green, 20 pts), row 4 → type 2 (white, 10 pts).
-- **Step movement**: accumulates `delta` in `_physics_process`; when `step_timer` exceeds `step_interval`, the whole formation node shifts `STEP_X = 11 px` horizontally. Moving the parent node moves all aliens together with no per-alien position math.
-- **Boundary detection**: checks the global X of the leftmost and rightmost living alien each step. On crossing 20 px (left) or 770 px (right) the direction reverses and the formation drops `DROP_Y = 16 px`.
+- **Grid**: 5 rows × 11 columns (55 aliens). Rows 0–1 → type 0 (red bug, 30 pts), rows 2–3 → type 1 (green squid, 20 pts), row 4 → type 2 (yellow crab, 10 pts).
+- **Step movement**: accumulates `delta` in `_physics_process`; when `step_timer` exceeds `step_interval`, the whole formation node shifts `STEP_X = 22 px` horizontally. Moving the parent node moves all aliens together with no per-alien position math.
+- **Boundary detection**: checks the global X of the leftmost and rightmost living alien each step. On crossing 40 px (left) or 1540 px (right) the direction reverses and the formation drops `DROP_Y = 32 px`.
 - **Speed scaling**: after every kill, `_recalc_speed()` interpolates `step_interval` and `shoot_interval` from their minimum values (0.04 s / 0.3 s) toward their maximum values (1.0 s / 3.0 s) based on how many aliens remain, then divides by `wave` for extra difficulty per wave.
 - **Shooting**: fires from the bottom-most living alien in a randomly selected column.
-- **Animation**: calls `toggle_frame()` on every living alien on each step tick, swapping between the two `Polygon2D` children (`Frame0` / `Frame1`).
+- **Animation**: calls `toggle_frame()` on every living alien on each step tick, which flips `Sprite2D.frame` between `0` and `1` on the alien's 2-frame horizontal sprite sheet.
 
 To tune formation feel, adjust these constants in `alien_formation.gd`:
 
 ```gdscript
 const COLS       = 11      # aliens per row
 const ROWS       = 5       # number of rows
-const SPACING_X  = 48.0    # horizontal gap between alien centers
-const SPACING_Y  = 40.0    # vertical gap between rows
-const STEP_X     = 11.0    # pixels moved per step
-const DROP_Y     = 16.0    # pixels dropped on boundary hit
+const SPACING_X  = 96.0    # horizontal gap between alien centers
+const SPACING_Y  = 80.0    # vertical gap between rows
+const STEP_X     = 22.0    # pixels moved per step
+const DROP_Y     = 32.0    # pixels dropped on boundary hit
 ```
 
 ---
 
-## Adding Sprite Art
+## Sprite Art
 
-All visuals currently use `Polygon2D` nodes as placeholders. To replace them with real pixel art:
+The game ships with a 16-bit pixel-art sprite set generated in **Google Stitch**. All 10 PNGs live in `assets/sprites/`. `docs/Assets List.md` documents the palette, canvas sizes, and frame counts.
 
-1. Export sprites as **PNG** at the native size (suggested 32×32 px for aliens, 48×16 for the player cannon). Use indexed or RGBA color mode. Pixel art looks sharpest with nearest-neighbor filtering.
+| File | Canvas | Frames | Used by |
+|---|---|---|---|
+| `player_ship.png` | 58 × 62 | 1 | `player.tscn` — Sprite2D child |
+| `alien_a.png` | 96 × 40 | 2 | `alien.tscn` — Sprite2D (hframes = 2), texture assigned per-type in `alien.gd` |
+| `alien_b.png` | 90 × 78 | 2 | same |
+| `alien_c.png` | 110 × 40 | 2 | same |
+| `ufo.png` | 72 × 39 | 1 | `ufo.tscn` |
+| `player_bullet.png` | 28 × 71 | 1 | `player_bullet.tscn` |
+| `enemy_bullet.png` | 43 × 30 | 1 | `enemy_bullet.tscn` |
+| `shield_block.png` | 16 × 16 | 1 | `shield.gd._make_segment()` — one block per shield cell |
+| `explosion.png` | 204 × 67 | 3 | `explosion.tscn` — spawned by `alien.kill()` / `ufo.hit()` |
+| `player_explosion.png` | 132 × 69 | 2 | `player_explosion.tscn` — spawned by `player.hit()` |
 
-2. In the Godot editor, import each PNG and set its **Import** settings:
-   - Filter: **Nearest** (disables blending between pixels)
-   - Compress Mode: **Lossless**
+All PNGs are imported with **Filter = Nearest** (set project-wide via `rendering/textures/canvas_textures/default_texture_filter = 0` in `project.godot`) so pixel art stays crisp under the 4:3 letterbox scale.
 
-3. Open the relevant scene and replace each `Polygon2D` node with a `Sprite2D` node. Assign the imported texture.
+Two-frame alien animation uses a horizontal sprite sheet with `Sprite2D.hframes = 2`. `alien.gd.toggle_frame()` flips `sprite.frame` between 0 and 1, called by `alien_formation.gd._step()` on every step beat.
 
-4. For the two-frame alien animation, either:
-   - Use a **horizontal spritesheet** (two frames side by side in one PNG) and set `Sprite2D.hframes = 2`. In `alien.gd`, replace the `toggle_frame()` body with `$Sprite2D.frame = anim_frame`.
-   - Or keep two separate `Sprite2D` children (`Frame0`, `Frame1`) and toggle `visible` — the existing `toggle_frame()` works without changes.
-
-**Expected asset filenames** (for reference; `docs/plan.md` has the full checklist):
-
-```
-assets/sprites/player_ship.png
-assets/sprites/alien_a.png      # top-row, 2 frames
-assets/sprites/alien_b.png      # mid-row, 2 frames
-assets/sprites/alien_c.png      # bottom-row, 2 frames
-assets/sprites/ufo.png
-assets/sprites/player_bullet.png
-assets/sprites/enemy_bullet.png
-assets/sprites/shield_block.png
-assets/sprites/explosion.png
-assets/sprites/player_explosion.png
-```
+Explosion playback is driven by `scripts/explosion.gd`: a simple `Sprite2D` subclass that advances `frame` on a timer and `queue_free`s after the last frame. Both `explosion.tscn` and `player_explosion.tscn` reuse this script with different textures and frame counts.
 
 ---
 
@@ -433,6 +426,4 @@ scenes/crt_effect.tscn        — CanvasLayer (layer 100) + ColorRect
 
 See `docs/plan.md` for the full tracked checklist. High-level items still open:
 
-- Sprite art (all visuals are `Polygon2D` placeholder shapes)
 - Sound effects and music
-- Explosion animations

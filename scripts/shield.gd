@@ -2,7 +2,8 @@ extends Node2D
 
 const COLS = 8
 const ROWS = 4
-const SEG = 8  # pixels per segment
+const SEG = 16  # pixels per segment (2x scale)
+const SHIELD_BLOCK = preload("res://assets/sprites/shield_block.png")
 
 
 func _ready() -> void:
@@ -37,13 +38,8 @@ func _make_segment(col: int, row: int) -> Area2D:
 	cs.shape = rs
 	a.add_child(cs)
 
-	var p := Polygon2D.new()
-	var h := SEG * 0.5
-	p.polygon = PackedVector2Array([
-		Vector2(-h, -h), Vector2(h, -h),
-		Vector2(h, h), Vector2(-h, h)
-	])
-	p.color = Color(0.0, 0.8, 0.2, 1.0)
-	a.add_child(p)
+	var s := Sprite2D.new()
+	s.texture = SHIELD_BLOCK
+	a.add_child(s)
 
 	return a

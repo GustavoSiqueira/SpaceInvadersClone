@@ -1,9 +1,10 @@
-[gd_scene format=3 uid="uid://player001"]
+[gd_scene load_steps=3 format=3 uid="uid://player001"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player_ship.png" id="2_ship"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
-size = Vector2(32, 16)
+size = Vector2(56, 48)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 1
@@ -13,6 +14,5 @@ script = ExtResource("1_player")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_player")
 
-[node name="Sprite" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-16, 8, -16, -4, -6, -4, 0, -12, 6, -4, 16, -4, 16, 8)
-color = Color(1, 1, 1, 1)
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_ship")

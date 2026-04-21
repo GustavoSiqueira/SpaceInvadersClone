@@ -100,8 +100,8 @@ func _ready() -> void:
 
 
 func _create_boundaries() -> void:
-	_add_boundary(Vector2(400.0, -10.0), Vector2(840.0, 20.0))
-	_add_boundary(Vector2(400.0, 610.0), Vector2(840.0, 20.0))
+	_add_boundary(Vector2(800.0, -20.0), Vector2(1680.0, 40.0))
+	_add_boundary(Vector2(800.0, 1220.0), Vector2(1680.0, 40.0))
 
 
 func _add_boundary(pos: Vector2, size: Vector2) -> void:
@@ -121,10 +121,10 @@ func _add_boundary(pos: Vector2, size: Vector2) -> void:
 
 
 func _spawn_shields() -> void:
-	var xs := [148, 278, 408, 538]
+	var xs := [296, 556, 816, 1076]
 	for x in xs:
 		var s := SHIELD_SCENE.instantiate()
-		s.position = Vector2(x, 455)
+		s.position = Vector2(x, 910)
 		shields.add_child(s)
 
 
@@ -132,7 +132,7 @@ func _spawn_formation() -> void:
 	if formation and is_instance_valid(formation):
 		formation.queue_free()
 	formation = ALIEN_FORMATION_SCENE.instantiate()
-	formation.position = Vector2(50.0, 80.0)
+	formation.position = Vector2(100.0, 160.0)
 	formation.wave = wave
 	formation.enemy_bullets_container = enemy_bullets
 	formation.alien_killed.connect(_on_alien_killed)
@@ -155,7 +155,7 @@ func _on_ufo_timer_timeout() -> void:
 func _spawn_ufo() -> void:
 	ufo = UFO_SCENE.instantiate()
 	ufo.direction = 1 if randf() > 0.5 else -1
-	ufo.position = Vector2(-20.0 if ufo.direction > 0 else 820.0, 40.0)
+	ufo.position = Vector2(-40.0 if ufo.direction > 0 else 1640.0, 80.0)
 	ufo.ufo_destroyed.connect(_on_ufo_destroyed)
 	ufo.ufo_exited.connect(func(): ufo = null)
 	add_child(ufo)

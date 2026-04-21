@@ -48,7 +48,7 @@ func test_hit_is_idempotent() -> void:
 
 func test_ufo_emits_exited_when_off_screen_right() -> void:
 	var ufo := _make_ufo(1)
-	ufo.position = Vector2(850.0, 40.0)
+	ufo.position = Vector2(1700.0, 80.0)
 	watch_signals(ufo)
 	ufo._physics_process(0.016)
 	assert_signal_emitted(ufo, "ufo_exited")
@@ -56,7 +56,7 @@ func test_ufo_emits_exited_when_off_screen_right() -> void:
 
 func test_ufo_emits_exited_when_off_screen_left() -> void:
 	var ufo := _make_ufo(-1)
-	ufo.position = Vector2(-50.0, 40.0)
+	ufo.position = Vector2(-100.0, 80.0)
 	watch_signals(ufo)
 	ufo._physics_process(0.016)
 	assert_signal_emitted(ufo, "ufo_exited")

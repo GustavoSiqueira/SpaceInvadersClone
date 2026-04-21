@@ -9,11 +9,11 @@ const ENEMY_BULLET_SCENE = preload("res://scenes/enemy_bullet.tscn")
 
 const COLS = 11
 const ROWS = 5
-const SPACING_X = 48.0
-const SPACING_Y = 40.0
-const STEP_X = 11.0
-const DROP_Y = 16.0
-const ALIEN_WIDTH = 28.0  # matches collision shape
+const SPACING_X = 96.0
+const SPACING_Y = 80.0
+const STEP_X = 22.0
+const DROP_Y = 32.0
+const ALIEN_WIDTH = 48.0  # matches collision shape
 
 ## Set before adding to tree.
 var wave: int = 1
@@ -83,7 +83,7 @@ func _step() -> void:
 	var left := _leftmost_x() + position.x
 	var right := _rightmost_x() + position.x
 
-	if (direction > 0 and right >= 770.0) or (direction < 0 and left <= 20.0):
+	if (direction > 0 and right >= 1540.0) or (direction < 0 and left <= 40.0):
 		direction *= -1
 		position.y += DROP_Y
 		_check_bottom()
@@ -108,7 +108,7 @@ func _rightmost_x() -> float:
 func _check_bottom() -> void:
 	for a in aliens:
 		if is_instance_valid(a) and not a.is_dead:
-			if a.global_position.y >= 490.0:
+			if a.global_position.y >= 980.0:
 				aliens_reached_bottom.emit()
 				return
 

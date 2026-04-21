@@ -51,15 +51,15 @@ func test_respawn_resets_position_x() -> void:
 	var player := _make_player()
 	player.position.x = 100.0
 	player.respawn()
-	assert_almost_eq(player.position.x, 400.0, 0.001)
+	assert_almost_eq(player.position.x, 800.0, 0.001)
 
 
-func test_respawn_clears_tween_and_resets_color() -> void:
+func test_respawn_clears_tween_and_resets_modulate() -> void:
 	var player := _make_player()
 	player.hit()
 	player.respawn()
 	assert_null(player._hit_tween)
-	assert_eq(player.get_node("Sprite").color, Color.WHITE)
+	assert_eq(player.get_node("Sprite").modulate, Color.WHITE)
 
 
 # --- _shoot ---
