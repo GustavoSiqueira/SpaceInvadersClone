@@ -18,8 +18,8 @@ static func spawn(scene: PackedScene, entity: Node2D) -> void:
 	if parent == null:
 		return
 	var ex := scene.instantiate()
-	ex.global_position = entity.global_position
 	parent.add_child(ex)
+	ex.global_position = entity.global_position
 
 
 func _ready() -> void:
